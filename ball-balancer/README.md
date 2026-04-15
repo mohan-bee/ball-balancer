@@ -1,31 +1,26 @@
-# Ball Balancer - Split Deployment
+# Ball Balancer
 
-This project is split into two parts:
-1. **Client**: Frontend to be deployed on Vercel.
-2. **Server**: WebSocket backend to be deployed on Render.
+Single project deployment containing both the 3D frontend and the WebSocket backend.
 
-## Deployment Instructions
+## Deployment on Render
 
-### 1. Backend (Render)
-- Deployed from the `server/` directory.
-- **Environment**: Bun
-- **Build Command**: `bun install`
-- **Start Command**: `bun run start` (runs `server.ts`)
-- **Port**: Render automatically provides `PORT`.
-
-### 2. Frontend (Vercel)
-- Deployed from the `client/` directory.
-- **Framework**: Other (Static)
-- **Build Command**: `bun run build`
-- **Output Directory**: `.` (Current directory)
-- **Note**: After deployment, copy your Render URL (e.g., `your-app.onrender.com`) and paste it into the "WebSocket host" field on the pairing screen.
+1. **Connect Repository**: Create a new "Web Service" on [Render](https://render.com/).
+2. **Environment**: Select **Bun** (or use Docker if preferred, but Bun is faster).
+3. **Build Command**: `bun install && bun run build`
+4. **Start Command**: `bun run start` (runs `server.ts`)
+5. **Port**: Render automatically detects the port (defaults to 3000 if not provided).
 
 ## Local Development
 
 ```bash
-# Start server
-npm run server:dev
-
-# Start client (in separate terminal)
-npm run client:dev
+bun install
+bun run build
+bun dev
 ```
+
+Open `http://localhost:3000`.
+
+## How it Works
+- The server (`server.ts`) serves the static frontend from the `web/` directory.
+- The same server handles WebSocket connections for real-time sensor data.
+- The pairing logic uses a unique room ID passed via QR code.

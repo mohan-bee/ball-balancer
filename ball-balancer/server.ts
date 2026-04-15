@@ -21,6 +21,30 @@ type RoomState = {
 const port = Number(process.env.PORT ?? 3000);
 const rooms = new Map<string, RoomState>();
 
+// Helper to serve files from the web directory
+const assetFiles: Record<string, { path: string; contentType: string }> = {
+  "/": {
+    path: "./web/index.html",
+    contentType: "text/html; charset=utf-8",
+  },
+  "/styles.css": {
+    path: "./web/styles.css",
+    contentType: "text/css; charset=utf-8",
+  },
+  "/app.js": {
+    path: "./web/app.js",
+    contentType: "text/javascript; charset=utf-8",
+  },
+  "/model-viewer.js": {
+    path: "./web/model-viewer.js",
+    contentType: "text/javascript; charset=utf-8",
+  },
+  "/models/scene.glb": {
+    path: "./web/models/scene.glb",
+    contentType: "model/gltf-binary",
+  },
+};
+
 function createRoom(): RoomState {
   return {
     latestState: createInitialTiltState(),
@@ -96,21 +120,31 @@ const server = Bun.serve({
   fetch(request, serverInstance) {
     const url = new URL(request.url);
 
-    // Health check or simple root message
-    if (url.pathname === "/health") {
-      return new Response("OK");
-    }
-
+    // Try to upgrade to WebSocket
     if (serverInstance.upgrade(request, { data: upgradeDataFromUrl(url) })) {
       return;
     }
 
-    return new Response("This is a WebSocket server. Connect via WS/WSS.", {
-      status: 200,
-      headers: {
-        "content-type": "text/plain; charset=utf-8",
-      },
-    });
+    // Serve static files
+    const asset = assetFiles[url.pathname];
+    if (asset) {
+      const file = Bun.file(asset.path);
+      return new Response(file, {
+        headers: {
+          "Content-Type": asset.contentType,
+        },
+      });
+    }
+
+    // Fallback to index.html for SPA routing if needed (though we don't really have subpages)
+    if (url.pathname !== "/health") {
+       const index = Bun.file(assetFiles["/"].path);
+       return new Response(index, {
+         headers: { "Content-Type": assetFiles["/"].contentType }
+       });
+    }
+
+    return new Response("Not found", { status: 404 });
   },
   websocket: {
     open(socket: ServerWebSocket<SocketData>) {
@@ -121,17 +155,6 @@ const server = Bun.serve({
           room.sensor.close();
         }
         room.sensor = socket;
-        if (
-          room.latestState.x === 0 &&
-          room.latestState.z === 0 &&
-          room.lastRawMessage === "No sensor packet received yet."
-        ) {
-          room.lastRawMessage = JSON.stringify({
-            type: "tilt",
-            x: 0,
-            z: 0,
-          });
-        }
         broadcastRoom(socket.data.roomId, room);
       } else {
         room.viewers.add(socket);
@@ -177,4 +200,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`> WebSocket Server ready on port ${server.port}`);
+console.log(`> Ready on http://${server.hostname}:${server.port}`);
