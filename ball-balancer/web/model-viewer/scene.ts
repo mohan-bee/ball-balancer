@@ -19,6 +19,7 @@ export function createViewerScene(stage: HTMLElement) {
 
   const trayGroup = new THREE.Group();
   trayGroup.rotation.set(0, 0, 0);
+  trayGroup.position.y = 1.4;
   scene.add(trayGroup);
 
   const trayShearGroup = new THREE.Group();
@@ -43,9 +44,6 @@ export function createViewerScene(stage: HTMLElement) {
   );
   trayGroup.add(trayShearGroup);
 
-  const ballGroup = new THREE.Group();
-  trayGroup.add(ballGroup);
-
   const ambient = new THREE.AmbientLight(0xffffff, 1.7);
   scene.add(ambient);
 
@@ -62,6 +60,22 @@ export function createViewerScene(stage: HTMLElement) {
   topLight.target.position.set(0, 0, 0);
   scene.add(topLight);
   scene.add(topLight.target);
+
+  const groundShadow = new THREE.Mesh(
+    new THREE.CircleGeometry(8.8, 48),
+    new THREE.MeshBasicMaterial({
+      color: 0x02040a,
+      transparent: true,
+      opacity: 0.28,
+      depthWrite: false,
+    }),
+  );
+  groundShadow.rotation.x = -Math.PI / 2;
+  groundShadow.position.y = -1.55;
+  scene.add(groundShadow);
+
+  const ballGroup = new THREE.Group();
+  scene.add(ballGroup);
 
   return {
     scene,

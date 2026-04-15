@@ -11,21 +11,24 @@ bun dev
 
 Open `http://localhost:3000`.
 
-## Vercel Deployment
+## How Pairing Works
 
-This repo is packed so it can deploy as a single Vercel project.
+- The receiver opens the app and gets a unique room id.
+- The left panel shows a QR code for the transmitter.
+- The QR encodes a join URL with `room=<id>&role=sensor`.
+- The transmitter connects to the same room over WebSocket.
+- The receiver and transmitter stay paired by that room id only.
 
-1. Push the repo to GitHub.
-2. Import it into Vercel.
-3. Keep the default framework preset as `Other`.
-4. Use `bun run build` as the build command.
-5. Set the output directory to `public`.
-6. Add a Redis integration from the Vercel Marketplace so the live tilt state can persist across requests.
+## Build
 
-The app reads the latest tilt state from `/api/state` and accepts updates at `/api/tilt`.
+```bash
+bun run build
+```
+
+This bundles the browser entry points into `web/app.js` and `web/model-viewer.js`.
 
 ## Notes
 
-- The 3D model is rendered from the bundled GLB assets in `web/models/`.
-- The overlay uses a simple React bundle and Lucide icons.
-- On local Bun dev, the WebSocket path still works. On Vercel, the UI falls back to the API polling flow.
+- The server is websocket-only and runs from `server.ts`.
+- The QR pairing flow is in `web/app-entry.tsx`.
+- The 3D tray and ball viewer live in the `web/model-viewer/` modules.

@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "bun server.ts",
-    "build": "mkdir -p public/models && bun build web/app-entry.tsx --outfile web/app.js && bun build web/model-viewer-entry.ts --outfile web/model-viewer.js && cp web/index.html public/index.html && cp web/styles.css public/styles.css && cp web/app.js public/app.js && cp web/model-viewer.js public/model-viewer.js && cp web/models/scene.glb public/models/scene.glb && cp web/models/sphere.glb public/models/sphere.glb",
+    "build": "bun build web/app-entry.tsx --outfile web/app.js && bun build web/model-viewer-entry.ts --outfile web/model-viewer.js",
     "start": "bun server.ts",
     "lint": "eslint",
     "test": "bun test",
@@ -13,9 +13,9 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@upstash/redis": "^1.37.0",
     "lucide-react": "^1.8.0",
     "next": "16.2.3",
+    "qrcode.react": "^4.2.0",
     "react": "19.2.4",
     "react-dom": "19.2.4",
     "three": "^0.183.2",

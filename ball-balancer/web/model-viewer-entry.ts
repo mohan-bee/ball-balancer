@@ -1,12 +1,7 @@
 import * as THREE from "three";
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 import { createViewerScene } from "./model-viewer/scene";
-import { loadSphereModel, loadTrayModel } from "./model-viewer/models";
-import {
-  createPhysicsState,
-  integratePhysicsStep,
-  updateTiltTargets,
-} from "./model-viewer/physics";
+import { createBallMesh, createFloatingBoard } from "./model-viewer/models";
+import { createPhysicsState, resetBall, stepPhysics, syncVisualState, updatePhysicsConfig, updateTiltTargets } from "./model-viewer/physics";
 
 const stage = document.getElementById("model-stage");
 const status = document.getElementById("model-status");
@@ -20,12 +15,10 @@ function setStatus(message: string) {
 if (stage) {
   setStatus("Model: loading...");
 
-  const { scene, camera, renderer, trayGroup, trayShearGroup, ballGroup } =
-    createViewerScene(stage);
-  const loader = new GLTFLoader();
+  const { scene, camera, renderer, trayGroup, trayShearGroup, ballGroup } = createViewerScene(stage);
   const clock = new THREE.Clock();
   const physics = createPhysicsState();
-  let sphereModel: THREE.Object3D | null = null;
+  const ballMesh = createBallMesh(ballGroup, physics.ballRadius);
 
   const onTiltState = (event: Event) => {
     const customEvent = event as CustomEvent<{ x: number; z: number }>;
@@ -37,32 +30,21 @@ if (stage) {
     }
   };
 
+  const onPhysicsConfig = (event: Event) => {
+    const customEvent = event as CustomEvent<any>;
+    updatePhysicsConfig(physics, customEvent.detail);
+  };
+
+  const onPhysicsReset = () => {
+    resetBall(physics);
+  };
+
   window.addEventListener("tilt-state", onTiltState);
+  window.addEventListener("physics-config", onPhysicsConfig);
+  window.addEventListener("physics-reset", onPhysicsReset);
 
-  loadTrayModel(loader, trayShearGroup, camera, setStatus, ({
-    trayHalfX,
-    trayHalfZ,
-    trayTopY,
-  }) => {
-    physics.trayHalfX = trayHalfX;
-    physics.trayHalfZ = trayHalfZ;
-    physics.trayTopY = trayTopY;
-  });
-
-  loadSphereModel(
-    loader,
-    ballGroup,
-    ({ sphereModel: model, ballRadius }) => {
-      sphereModel = model;
-      physics.ballRadius = ballRadius;
-      ballGroup.position.set(0, physics.trayTopY + ballRadius * 2.2, 0);
-    },
-    ({ sphereModel: fallbackModel, ballRadius }) => {
-      sphereModel = fallbackModel;
-      physics.ballRadius = ballRadius;
-      ballGroup.position.set(0, physics.trayTopY + ballRadius * 2.2, 0);
-    },
-  );
+  createFloatingBoard(trayShearGroup, setStatus);
+  camera.lookAt(0, physics.planeCenter.y, 0);
 
   const resize = () => {
     const width = stage.clientWidth || 1;
@@ -81,12 +63,8 @@ if (stage) {
     frame = window.requestAnimationFrame(animate);
     const delta = Math.min(clock.getDelta(), 0.05);
 
-    integratePhysicsStep(physics, delta, trayGroup, sphereModel);
-    ballGroup.position.set(
-      physics.ballPosition.x,
-      physics.ballPosition.y,
-      physics.ballPosition.z,
-    );
+    stepPhysics(physics, delta);
+    syncVisualState(physics, trayGroup, ballMesh);
 
     renderer.render(scene, camera);
   };
