@@ -25297,7 +25297,7 @@ function createBallMesh(ballGroup, radius = BALL_RADIUS) {
 // web/model-viewer/physics.ts
 var DEFAULT_CONFIG = {
   gravity: 9.81 * 3,
-  rotationResponse: 8.5,
+  rotationResponse: 14.5,
   accelerationFactor: 5 / 7,
   linearDamping: 0.99,
   edgeBounce: 0.6,

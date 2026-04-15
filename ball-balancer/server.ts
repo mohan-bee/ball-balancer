@@ -21,28 +21,13 @@ type RoomState = {
 const port = Number(process.env.PORT ?? 3000);
 const rooms = new Map<string, RoomState>();
 
-// Helper to serve files from the web directory
+// Asset map for clean serving
 const assetFiles: Record<string, { path: string; contentType: string }> = {
-  "/": {
-    path: "./web/index.html",
-    contentType: "text/html; charset=utf-8",
-  },
-  "/styles.css": {
-    path: "./web/styles.css",
-    contentType: "text/css; charset=utf-8",
-  },
-  "/app.js": {
-    path: "./web/app.js",
-    contentType: "text/javascript; charset=utf-8",
-  },
-  "/model-viewer.js": {
-    path: "./web/model-viewer.js",
-    contentType: "text/javascript; charset=utf-8",
-  },
-  "/models/scene.glb": {
-    path: "./web/models/scene.glb",
-    contentType: "model/gltf-binary",
-  },
+  "/": { path: "./web/index.html", contentType: "text/html; charset=utf-8" },
+  "/styles.css": { path: "./web/styles.css", contentType: "text/css; charset=utf-8" },
+  "/app.js": { path: "./web/app.js", contentType: "text/javascript; charset=utf-8" },
+  "/model-viewer.js": { path: "./web/model-viewer.js", contentType: "text/javascript; charset=utf-8" },
+  "/models/scene.glb": { path: "./web/models/scene.glb", contentType: "model/gltf-binary" },
 };
 
 function createRoom(): RoomState {
@@ -120,28 +105,28 @@ const server = Bun.serve({
   fetch(request, serverInstance) {
     const url = new URL(request.url);
 
-    // Try to upgrade to WebSocket
+    // 1. WebSocket Upgrade check (Priority)
     if (serverInstance.upgrade(request, { data: upgradeDataFromUrl(url) })) {
       return;
     }
 
-    // Serve static files
+    // 2. Static Asset serving
     const asset = assetFiles[url.pathname];
     if (asset) {
-      const file = Bun.file(asset.path);
-      return new Response(file, {
-        headers: {
-          "Content-Type": asset.contentType,
-        },
+      return new Response(Bun.file(asset.path), {
+        headers: { "Content-Type": asset.contentType },
       });
     }
 
-    // Fallback to index.html for SPA routing if needed (though we don't really have subpages)
-    if (url.pathname !== "/health") {
-       const index = Bun.file(assetFiles["/"].path);
-       return new Response(index, {
-         headers: { "Content-Type": assetFiles["/"].contentType }
-       });
+    // 3. SPA Fallback / Health check
+    if (url.pathname === "/health") return new Response("OK");
+    
+    // Serve index.html for unknown paths to support client-side routing
+    if (request.method === "GET") {
+      const indexPath = assetFiles["/"].path;
+      return new Response(Bun.file(indexPath), {
+        headers: { "Content-Type": assetFiles["/"].contentType },
+      });
     }
 
     return new Response("Not found", { status: 404 });
@@ -149,6 +134,7 @@ const server = Bun.serve({
   websocket: {
     open(socket: ServerWebSocket<SocketData>) {
       const room = getRoom(socket.data.roomId);
+      console.log(`[WS] Open: Room ${socket.data.roomId} as ${socket.data.role}`);
 
       if (socket.data.role === "sensor") {
         if (room.sensor && room.sensor !== socket) {
@@ -165,30 +151,25 @@ const server = Bun.serve({
     message(socket: ServerWebSocket<SocketData>, message) {
       const rawMessage = decodeMessage(message);
       const parsed = parseClientMessage(rawMessage);
+      if (!parsed) return;
+
       const room = getRoom(socket.data.roomId);
-
-      if (!parsed) {
-        return;
-      }
-
       if (parsed.type === "viewer") {
         socket.data.role = "viewer";
         room.viewers.add(socket);
         socket.send(JSON.stringify(getPayload(socket.data.roomId, room)));
-        return;
+      } else {
+        socket.data.role = "sensor";
+        room.sensor = socket;
+        room.lastRawMessage = rawMessage;
+        room.latestState = createTiltState(parsed.x, parsed.z);
+        broadcastRoom(socket.data.roomId, room);
       }
-
-      socket.data.role = "sensor";
-      room.sensor = socket;
-      room.lastRawMessage = rawMessage;
-      room.latestState = createTiltState(parsed.x, parsed.z);
-      broadcastRoom(socket.data.roomId, room);
     },
     close(socket: ServerWebSocket<SocketData>) {
+      console.log(`[WS] Close: Room ${socket.data.roomId}`);
       const room = rooms.get(socket.data.roomId);
-      if (!room) {
-        return;
-      }
+      if (!room) return;
 
       if (socket.data.role === "sensor" && room.sensor === socket) {
         room.sensor = null;
@@ -200,4 +181,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`> Ready on http://${server.hostname}:${server.port}`);
+console.log(`> Server running on http://localhost:${server.port}`);

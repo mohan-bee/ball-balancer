@@ -33,7 +33,7 @@ export interface PhysicsState {
 
 const DEFAULT_CONFIG: PhysicsConfig = {
   gravity: 9.81 * 3,
-  rotationResponse: 8.5,
+  rotationResponse: 14.5,
   accelerationFactor: 5 / 7,
   linearDamping: 0.99,
   edgeBounce: 0.6,
@@ -96,10 +96,9 @@ export function createPhysicsState(planeCenter = new THREE.Vector3(0, 1.4, 0)): 
 
 export function updateTiltTargets(state: PhysicsState, x: number, z: number) {
   const { config } = state;
-  // User requested: tilt right-to-left -> go left-to-right (Horizontal inversion)
-  // User requested: top/down tilt opposite (Vertical inversion)
-  const horizontal = config.invertX ? x : -x;
-  const vertical = config.invertZ ? z : -z;
+  // Flipped signs to fix inverted movement
+  const horizontal = config.invertX ? -x : x;
+  const vertical = config.invertZ ? -z : z;
   
   state.targetRotationX = roundRotation(THREE.MathUtils.clamp(vertical * 0.8, -0.95, 0.95));
   state.targetRotationZ = roundRotation(THREE.MathUtils.clamp(horizontal * 0.8, -0.95, 0.95));
