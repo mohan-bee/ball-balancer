@@ -21,29 +21,6 @@ type RoomState = {
 const port = Number(process.env.PORT ?? 3000);
 const rooms = new Map<string, RoomState>();
 
-const assetFiles = {
-  "/": {
-    file: Bun.file(`${process.cwd()}/web/index.html`),
-    contentType: "text/html; charset=utf-8",
-  },
-  "/styles.css": {
-    file: Bun.file(`${process.cwd()}/web/styles.css`),
-    contentType: "text/css; charset=utf-8",
-  },
-  "/app.js": {
-    file: Bun.file(`${process.cwd()}/web/app.js`),
-    contentType: "text/javascript; charset=utf-8",
-  },
-  "/model-viewer.js": {
-    file: Bun.file(`${process.cwd()}/web/model-viewer.js`),
-    contentType: "text/javascript; charset=utf-8",
-  },
-  "/models/scene.glb": {
-    file: Bun.file(`${process.cwd()}/web/models/scene.glb`),
-    contentType: "model/gltf-binary",
-  },
-} as const;
-
 function createRoom(): RoomState {
   return {
     latestState: createInitialTiltState(),
@@ -119,22 +96,17 @@ const server = Bun.serve({
   fetch(request, serverInstance) {
     const url = new URL(request.url);
 
+    // Health check or simple root message
+    if (url.pathname === "/health") {
+      return new Response("OK");
+    }
+
     if (serverInstance.upgrade(request, { data: upgradeDataFromUrl(url) })) {
       return;
     }
 
-    const asset = assetFiles[url.pathname as keyof typeof assetFiles];
-
-    if (asset) {
-      return new Response(asset.file, {
-        headers: {
-          "content-type": asset.contentType,
-        },
-      });
-    }
-
-    return new Response("Not found", {
-      status: 404,
+    return new Response("This is a WebSocket server. Connect via WS/WSS.", {
+      status: 200,
       headers: {
         "content-type": "text/plain; charset=utf-8",
       },
@@ -205,4 +177,4 @@ const server = Bun.serve({
   },
 });
 
-console.log(`> Ready on http://${server.hostname}:${server.port}`);
+console.log(`> WebSocket Server ready on port ${server.port}`);

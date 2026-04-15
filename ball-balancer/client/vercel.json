@@ -5,7 +5,7 @@
   "trailingSlash": false,
   "framework": null,
   "buildCommand": "bun run build",
-  "outputDirectory": "web",
+  "outputDirectory": ".",
   "rewrites": [
     {
       "source": "/(.*)",
