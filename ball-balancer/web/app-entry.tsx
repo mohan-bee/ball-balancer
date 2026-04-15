@@ -1,4 +1,4 @@
-import { Bug, ChevronLeft, ChevronRight, Copy, HelpCircle, RefreshCcw } from "lucide-react";
+import { Bug, ChevronLeft, ChevronRight, Copy, Download, HelpCircle, RefreshCcw, Smartphone } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
@@ -226,46 +226,102 @@ function OverlayApp() {
             </button>
           </div>
 
-          <label className="pairing-field">
-            <span className="panel-label">WebSocket host</span>
-            <input
-              className="pairing-input"
-              type="text"
-              value={pairingHost}
-              onChange={(event) => setPairingHost(event.target.value)}
-              spellCheck={false}
-              autoCapitalize="off"
-              autoCorrect="off"
-            />
-          </label>
-
-          <div className="pairing-room">Room {panelState.roomId}</div>
-          <div className="pairing-qr">
-            <QRCodeSVG
-              value={sensorSocketUrl}
-              size={168}
-              bgColor="#ffffff"
-              fgColor="#0f172a"
-            />
+          <div className="panel-tabs">
+            <button
+              className={`panel-tab ${!debugOpen ? "active" : ""}`}
+              onClick={() => {}}
+              type="button"
+            >
+              Setup
+            </button>
           </div>
-          <div className="pairing-url">{sensorSocketUrl}</div>
-          <button
-            className="pairing-copy"
-            type="button"
-            onClick={async () => {
-              await navigator.clipboard.writeText(sensorSocketUrl);
-              setCopyLabel("Copied");
-              window.setTimeout(() => setCopyLabel("Copy link"), 1200);
-            }}
-          >
-            <Copy size={14} strokeWidth={2.4} />
-            <span>{copyLabel}</span>
-          </button>
+
+          <div className="setup-section">
+            <div className="setup-step">
+              <div className="setup-step-head">
+                <div className="setup-step-num">1</div>
+                <div className="setup-step-title">Get Transmitter App</div>
+                <Smartphone size={14} className="panel-label" style={{ marginLeft: 'auto', opacity: 0.5 }} />
+              </div>
+              <p className="setup-step-desc">Scan or click to download the Android app to your mobile device.</p>
+              <div className="pairing-qr">
+                <a
+                  href="https://expo.dev/artifacts/eas/v1ejbdrAfqiYuGMpKZndtF.aab"
+                  target="_blank"
+                  rel="noreferrer"
+                  title="Download Transmitter App"
+                >
+                  <QRCodeSVG
+                    value="https://expo.dev/artifacts/eas/v1ejbdrAfqiYuGMpKZndtF.aab"
+                    size={140}
+                    bgColor="#ffffff"
+                    fgColor="#0f172a"
+                    includeMargin={true}
+                  />
+                </a>
+              </div>
+              <a
+                className="pairing-copy"
+                href="https://expo.dev/artifacts/eas/v1ejbdrAfqiYuGMpKZndtF.aab"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Download size={14} strokeWidth={2.4} />
+                <span>Download .AAB</span>
+              </a>
+            </div>
+
+            <div className="panel-divider" />
+
+            <div className="setup-step">
+              <div className="setup-step-head">
+                <div className="setup-step-num">2</div>
+                <div className="setup-step-title">Connect & Control</div>
+              </div>
+              <p className="setup-step-desc">Open the app and scan this QR to pair your phone with this room.</p>
+
+              <label className="pairing-field">
+                <span className="panel-label">WebSocket host</span>
+                <input
+                  className="pairing-input"
+                  type="text"
+                  value={pairingHost}
+                  onChange={(event) => setPairingHost(event.target.value)}
+                  spellCheck={false}
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                />
+              </label>
+
+              <div className="pairing-room">Room {panelState.roomId}</div>
+              <div className="pairing-qr">
+                <QRCodeSVG
+                  value={sensorSocketUrl}
+                  size={140}
+                  bgColor="#ffffff"
+                  fgColor="#0f172a"
+                  includeMargin={true}
+                />
+              </div>
+              <div className="pairing-url">{sensorSocketUrl}</div>
+              <button
+                className="pairing-copy"
+                type="button"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(sensorSocketUrl);
+                  setCopyLabel("Copied");
+                  window.setTimeout(() => setCopyLabel("Copy link"), 1200);
+                }}
+              >
+                <Copy size={14} strokeWidth={2.4} />
+                <span>{copyLabel}</span>
+              </button>
+            </div>
+          </div>
+
           <ul className="panel-list">
-            <li>Scan this QR on the sensor device.</li>
-            <li>The QR opens the exact WebSocket room URL.</li>
-            <li>If your phone cannot connect, replace localhost with your LAN IP.</li>
-            <li>Websocket traffic stays in the same room id.</li>
+            <li>The transmitter app uses your phone's tilt sensors.</li>
+            <li>If your phone cannot connect, ensure both are on the same WiFi.</li>
           </ul>
         </div>
       </section>
