@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "public": true,
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "framework": null,
+  "buildCommand": "bun run build",
+  "outputDirectory": "web",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

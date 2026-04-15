@@ -96,8 +96,10 @@ export function createPhysicsState(planeCenter = new THREE.Vector3(0, 1.4, 0)): 
 
 export function updateTiltTargets(state: PhysicsState, x: number, z: number) {
   const { config } = state;
-  const horizontal = config.invertX ? -x : x;
-  const vertical = config.invertZ ? -z : z;
+  // User requested: tilt right-to-left -> go left-to-right (Horizontal inversion)
+  // User requested: top/down tilt opposite (Vertical inversion)
+  const horizontal = config.invertX ? x : -x;
+  const vertical = config.invertZ ? z : -z;
   
   state.targetRotationX = roundRotation(THREE.MathUtils.clamp(vertical * 0.8, -0.95, 0.95));
   state.targetRotationZ = roundRotation(THREE.MathUtils.clamp(horizontal * 0.8, -0.95, 0.95));
