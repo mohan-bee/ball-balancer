@@ -1,0 +1,12 @@
+{
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "59cc86c8-134e-4637-a911-f0a3809b3d48"
+      }
+    },
+    "android": {
+      "package": "com.mohankalvium.ballbalancer"
+    }
+  }
+}

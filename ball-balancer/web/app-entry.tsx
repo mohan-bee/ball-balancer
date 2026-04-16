@@ -158,15 +158,15 @@ function OverlayApp() {
             <div className="setup-step">
               <p className="setup-step-desc">Download the Android transmitter app to your mobile device.</p>
               <div className="pairing-qr">
-                <a href="https://expo.dev/artifacts/eas/4De8fxL38497SyYzCMGnUn.apk" target="_blank" rel="noreferrer">
+                <a href="https://expo.dev/artifacts/eas/jDXNeCziNRStNCf8ysXKmy.apk" target="_blank" rel="noreferrer">
                   <QRCodeSVG
-                    value="https://expo.dev/artifacts/eas/4De8fxL38497SyYzCMGnUn.apk"
+                    value="https://expo.dev/artifacts/eas/jDXNeCziNRStNCf8ysXKmy.apk"
                     size={140}
                     includeMargin={true}
                   />
                 </a>
               </div>
-              <a className="pairing-copy" href="https://expo.dev/artifacts/eas/4De8fxL38497SyYzCMGnUn.apk" target="_blank" rel="noreferrer">
+              <a className="pairing-copy" href="https://expo.dev/artifacts/eas/jDXNeCziNRStNCf8ysXKmy.apk" target="_blank" rel="noreferrer">
                 <Download size={14} strokeWidth={2.4} />
                 <span>Download .APK</span>
               </a>
