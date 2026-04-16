@@ -18444,7 +18444,7 @@ function OverlayApp() {
                             strokeWidth: 2.4
                           }, undefined, false, undefined, this),
                           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            children: "Download .AAB"
+                            children: "Download .APK"
                           }, undefined, false, undefined, this)
                         ]
                       }, undefined, true, undefined, this)

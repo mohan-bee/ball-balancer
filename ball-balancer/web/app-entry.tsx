@@ -267,7 +267,7 @@ function OverlayApp() {
                 rel="noreferrer"
               >
                 <Download size={14} strokeWidth={2.4} />
-                <span>Download .AAB</span>
+                <span>Download .APK</span>
               </a>
             </div>
 
