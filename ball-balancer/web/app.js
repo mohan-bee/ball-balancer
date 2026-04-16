@@ -18336,11 +18336,11 @@ function OverlayApp() {
                     /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
                       className: "pairing-qr",
                       children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
-                        href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk",
+                        href: "https://expo.dev/artifacts/eas/4De8fxL38497SyYzCMGnUn.apk",
                         target: "_blank",
                         rel: "noreferrer",
                         children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
-                          value: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk",
+                          value: "https://expo.dev/artifacts/eas/4De8fxL38497SyYzCMGnUn.apk",
                           size: 140,
                           includeMargin: true
                         }, undefined, false, undefined, this)
@@ -18348,7 +18348,7 @@ function OverlayApp() {
                     }, undefined, false, undefined, this),
                     /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
                       className: "pairing-copy",
-                      href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk",
+                      href: "https://expo.dev/artifacts/eas/4De8fxL38497SyYzCMGnUn.apk",
                       target: "_blank",
                       rel: "noreferrer",
                       children: [
