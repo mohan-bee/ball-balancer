@@ -17204,61 +17204,45 @@ var createLucideIcon = (iconName, iconNode) => {
   return Component;
 };
 
-// node_modules/lucide-react/dist/esm/icons/circle-question-mark.js
-var __iconNode = [
-  ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
-  ["path", { d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", key: "1u773s" }],
-  ["path", { d: "M12 17h.01", key: "p32p05" }]
-];
-var CircleQuestionMark = createLucideIcon("circle-question-mark", __iconNode);
-// node_modules/lucide-react/dist/esm/icons/bug.js
-var __iconNode2 = [
-  ["path", { d: "M12 20v-9", key: "1qisl0" }],
-  ["path", { d: "M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z", key: "uouzyp" }],
-  ["path", { d: "M14.12 3.88 16 2", key: "qol33r" }],
-  ["path", { d: "M21 21a4 4 0 0 0-3.81-4", key: "1b0z45" }],
-  ["path", { d: "M21 5a4 4 0 0 1-3.55 3.97", key: "5cxbf6" }],
-  ["path", { d: "M22 13h-4", key: "1jl80f" }],
-  ["path", { d: "M3 21a4 4 0 0 1 3.81-4", key: "1fjd4g" }],
-  ["path", { d: "M3 5a4 4 0 0 0 3.55 3.97", key: "1d7oge" }],
-  ["path", { d: "M6 13H2", key: "82j7cp" }],
-  ["path", { d: "m8 2 1.88 1.88", key: "fmnt4t" }],
-  ["path", { d: "M9 7.13V6a3 3 0 1 1 6 0v1.13", key: "1vgav8" }]
-];
-var Bug = createLucideIcon("bug", __iconNode2);
 // node_modules/lucide-react/dist/esm/icons/chevron-left.js
-var __iconNode3 = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
-var ChevronLeft = createLucideIcon("chevron-left", __iconNode3);
+var __iconNode = [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]];
+var ChevronLeft = createLucideIcon("chevron-left", __iconNode);
 // node_modules/lucide-react/dist/esm/icons/chevron-right.js
-var __iconNode4 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
-var ChevronRight = createLucideIcon("chevron-right", __iconNode4);
+var __iconNode2 = [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]];
+var ChevronRight = createLucideIcon("chevron-right", __iconNode2);
 // node_modules/lucide-react/dist/esm/icons/copy.js
-var __iconNode5 = [
+var __iconNode3 = [
   ["rect", { width: "14", height: "14", x: "8", y: "8", rx: "2", ry: "2", key: "17jyea" }],
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
-var Copy = createLucideIcon("copy", __iconNode5);
+var Copy = createLucideIcon("copy", __iconNode3);
 // node_modules/lucide-react/dist/esm/icons/download.js
-var __iconNode6 = [
+var __iconNode4 = [
   ["path", { d: "M12 15V3", key: "m9g1x1" }],
   ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
   ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
 ];
-var Download = createLucideIcon("download", __iconNode6);
+var Download = createLucideIcon("download", __iconNode4);
+// node_modules/lucide-react/dist/esm/icons/link.js
+var __iconNode5 = [
+  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
+  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
+];
+var Link = createLucideIcon("link", __iconNode5);
 // node_modules/lucide-react/dist/esm/icons/refresh-ccw.js
-var __iconNode7 = [
+var __iconNode6 = [
   ["path", { d: "M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "14sxne" }],
   ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
   ["path", { d: "M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16", key: "1hlbsb" }],
   ["path", { d: "M16 16h5v5", key: "ccwih5" }]
 ];
-var RefreshCcw = createLucideIcon("refresh-ccw", __iconNode7);
+var RefreshCcw = createLucideIcon("refresh-ccw", __iconNode6);
 // node_modules/lucide-react/dist/esm/icons/smartphone.js
-var __iconNode8 = [
+var __iconNode7 = [
   ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
   ["path", { d: "M12 18h.01", key: "mhygvu" }]
 ];
-var Smartphone = createLucideIcon("smartphone", __iconNode8);
+var Smartphone = createLucideIcon("smartphone", __iconNode7);
 // node_modules/qrcode.react/lib/esm/index.js
 var import_react4 = __toESM(require_react(), 1);
 var __defProp2 = Object.defineProperty;
@@ -18215,7 +18199,7 @@ function buildSocketUrl(roomId) {
   return url.toString();
 }
 function OverlayApp() {
-  const [usageOpen, setUsageOpen] = import_react5.useState(true);
+  const [setupOpen, setSetupOpen] = import_react5.useState(true);
   const [debugOpen, setDebugOpen] = import_react5.useState(false);
   const [copyLabel, setCopyLabel] = import_react5.useState("Copy link");
   const [pairingHost, setPairingHost] = import_react5.useState(() => window.location.host);
@@ -18261,20 +18245,15 @@ function OverlayApp() {
     let reconnectTimeout = null;
     let isUnmounted = false;
     const connect = () => {
-      if (isUnmounted) {
+      if (isUnmounted)
         return;
-      }
       socket = new WebSocket(buildSocketUrl(panelState.roomId));
       socket.addEventListener("open", () => {
         if (isUnmounted) {
           socket?.close();
           return;
         }
-        setPanelState((current) => ({
-          ...current,
-          status: "Connected"
-        }));
-        socket?.send(JSON.stringify({ type: "viewer" }));
+        setPanelState((current) => ({ ...current, status: "Connected" }));
       });
       socket.addEventListener("message", (event) => {
         let payload;
@@ -18283,60 +18262,31 @@ function OverlayApp() {
         } catch {
           return;
         }
-        if (!payload || typeof payload !== "object" || !("type" in payload) || payload.type !== "state") {
+        if (payload?.type !== "state")
           return;
-        }
-        const state = payload;
         window.dispatchEvent(new CustomEvent("tilt-state", {
-          detail: {
-            x: state.x,
-            z: state.z
-          }
+          detail: { x: payload.x, z: payload.z }
         }));
         setPanelState((current) => ({
           ...current,
           status: "Connected",
-          meta: state.lastRawMessage ?? `Last packet: ${JSON.stringify({ x: state.x, z: state.z })}`,
-          readout: state.readout
+          meta: payload.lastRawMessage ?? `Last packet: ${JSON.stringify({ x: payload.x, z: payload.z })}`,
+          readout: payload.readout
         }));
       });
       socket.addEventListener("close", () => {
-        if (isUnmounted) {
+        if (isUnmounted)
           return;
-        }
-        setPanelState((current) => ({
-          ...current,
-          status: "Disconnected"
-        }));
-        if (reconnectTimeout) {
-          window.clearTimeout(reconnectTimeout);
-        }
-        reconnectTimeout = window.setTimeout(() => {
-          connect();
-        }, 2000);
+        setPanelState((current) => ({ ...current, status: "Disconnected" }));
+        reconnectTimeout = window.setTimeout(connect, 2000);
       });
-      socket.addEventListener("error", () => {
-        if (isUnmounted) {
-          return;
-        }
-        setPanelState((current) => ({
-          ...current,
-          status: "Connection error"
-        }));
-      });
-    };
-    const handleBeforeUnload = () => {
-      socket?.close();
     };
     connect();
-    window.addEventListener("beforeunload", handleBeforeUnload);
     return () => {
       isUnmounted = true;
-      if (reconnectTimeout) {
+      if (reconnectTimeout)
         window.clearTimeout(reconnectTimeout);
-      }
       socket?.close();
-      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [panelState.roomId]);
   return /* @__PURE__ */ jsx_dev_runtime.jsxDEV("main", {
@@ -18348,203 +18298,72 @@ function OverlayApp() {
           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
             className: "panel-toggle",
             type: "button",
-            "aria-expanded": usageOpen,
-            "aria-controls": "usage-panel",
-            onClick: () => setUsageOpen((value) => !value),
-            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(CircleQuestionMark, {
+            onClick: () => setSetupOpen((v) => !v),
+            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Smartphone, {
               size: 16,
               strokeWidth: 2.25
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-            id: "usage-panel",
             className: "panel-card",
-            hidden: !usageOpen,
+            hidden: !setupOpen,
             children: [
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
                 className: "panel-head",
                 children: [
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
                     className: "panel-title",
-                    children: "Pairing"
+                    children: "1. Get App"
                   }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
                     className: "panel-close",
-                    type: "button",
-                    "aria-label": "Collapse pairing panel",
-                    onClick: () => setUsageOpen(false),
+                    onClick: () => setSetupOpen(false),
                     children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(ChevronLeft, {
-                      size: 16,
-                      strokeWidth: 2.5
+                      size: 16
                     }, undefined, false, undefined, this)
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-tabs",
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                  className: `panel-tab ${!debugOpen ? "active" : ""}`,
-                  onClick: () => {},
-                  type: "button",
-                  children: "Setup"
-                }, undefined, false, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
                 className: "setup-section",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "setup-step",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "setup-step-head",
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                            className: "setup-step-num",
-                            children: "1"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                            className: "setup-step-title",
-                            children: "Get Transmitter App"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Smartphone, {
-                            size: 14,
-                            className: "panel-label",
-                            style: { marginLeft: "auto", opacity: 0.5 }
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
-                        className: "setup-step-desc",
-                        children: "Scan or click to download the Android app to your mobile device."
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "pairing-qr",
-                        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
-                          href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk ",
-                          target: "_blank",
-                          rel: "noreferrer",
-                          title: "Download Transmitter App",
-                          children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
-                            value: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk ",
-                            size: 140,
-                            bgColor: "#ffffff",
-                            fgColor: "#0f172a",
-                            includeMargin: true
-                          }, undefined, false, undefined, this)
-                        }, undefined, false, undefined, this)
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
-                        className: "pairing-copy",
-                        href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk ",
+                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "setup-step",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
+                      className: "setup-step-desc",
+                      children: "Download the Android transmitter app to your mobile device."
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                      className: "pairing-qr",
+                      children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
+                        href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk",
                         target: "_blank",
                         rel: "noreferrer",
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Download, {
-                            size: 14,
-                            strokeWidth: 2.4
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            children: "Download .APK"
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-divider"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "setup-step",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "setup-step-head",
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                            className: "setup-step-num",
-                            children: "2"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                            className: "setup-step-title",
-                            children: "Connect & Control"
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
-                        className: "setup-step-desc",
-                        children: "Open the app and scan this QR to pair your phone with this room."
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                        className: "pairing-field",
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            className: "panel-label",
-                            children: "WebSocket host"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                            className: "pairing-input",
-                            type: "text",
-                            value: pairingHost,
-                            onChange: (event) => setPairingHost(event.target.value),
-                            spellCheck: false,
-                            autoCapitalize: "off",
-                            autoCorrect: "off"
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "pairing-room",
-                        children: [
-                          "Room ",
-                          panelState.roomId
-                        ]
-                      }, undefined, true, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "pairing-qr",
                         children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
-                          value: sensorSocketUrl,
+                          value: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk",
                           size: 140,
-                          bgColor: "#ffffff",
-                          fgColor: "#0f172a",
                           includeMargin: true
                         }, undefined, false, undefined, this)
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "pairing-url",
-                        children: sensorSocketUrl
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                        className: "pairing-copy",
-                        type: "button",
-                        onClick: async () => {
-                          await navigator.clipboard.writeText(sensorSocketUrl);
-                          setCopyLabel("Copied");
-                          window.setTimeout(() => setCopyLabel("Copy link"), 1200);
-                        },
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Copy, {
-                            size: 14,
-                            strokeWidth: 2.4
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            children: copyLabel
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("ul", {
-                className: "panel-list",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("li", {
-                    children: "The transmitter app uses your phone's tilt sensors."
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("li", {
-                    children: "If your phone cannot connect, ensure both are on the same WiFi."
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this)
+                      }, undefined, false, undefined, this)
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
+                      className: "pairing-copy",
+                      href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk",
+                      target: "_blank",
+                      rel: "noreferrer",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Download, {
+                          size: 14,
+                          strokeWidth: 2.4
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          children: "Download .APK"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
@@ -18555,16 +18374,13 @@ function OverlayApp() {
           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
             className: "panel-toggle",
             type: "button",
-            "aria-expanded": debugOpen,
-            "aria-controls": "debug-panel",
-            onClick: () => setDebugOpen((value) => !value),
-            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Bug, {
+            onClick: () => setDebugOpen((v) => !v),
+            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Link, {
               size: 16,
               strokeWidth: 2.25
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-            id: "debug-panel",
             className: "panel-card",
             hidden: !debugOpen,
             children: [
@@ -18573,265 +18389,198 @@ function OverlayApp() {
                 children: [
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
                     className: "panel-title",
-                    children: "Debug"
+                    children: "2. Connect & Control"
                   }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
                     className: "panel-close",
-                    type: "button",
-                    "aria-label": "Collapse debug panel",
                     onClick: () => setDebugOpen(false),
                     children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(ChevronRight, {
-                      size: 16,
-                      strokeWidth: 2.5
+                      size: 16
                     }, undefined, false, undefined, this)
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-label",
-                    children: "Status"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-value",
-                    id: "status",
-                    children: panelState.status
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-label",
-                    children: "Packet"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-value",
-                    id: "meta",
-                    children: panelState.meta
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row panel-stack",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-label",
-                    children: "Readout"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("pre", {
-                    id: "readout",
-                    children: panelState.readout
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-label",
-                    children: "Model"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-value",
-                    id: "model-status",
-                    children: "Loading"
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
+                className: "setup-section",
+                style: { paddingBottom: 0 },
+                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "setup-step",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
+                      className: "setup-step-desc",
+                      children: [
+                        "Scan this QR in the app to pair with ",
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("strong", {
+                          children: [
+                            "Room ",
+                            panelState.roomId
+                          ]
+                        }, undefined, true, undefined, this),
+                        "."
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                      className: "pairing-qr",
+                      children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
+                        value: sensorSocketUrl,
+                        size: 140,
+                        includeMargin: true
+                      }, undefined, false, undefined, this)
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
+                      className: "pairing-field",
+                      style: { marginTop: "12px" },
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          className: "panel-label",
+                          children: "WebSocket host"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                          className: "pairing-input",
+                          type: "text",
+                          value: pairingHost,
+                          onChange: (e) => setPairingHost(e.target.value)
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+                      className: "pairing-copy",
+                      type: "button",
+                      onClick: async () => {
+                        await navigator.clipboard.writeText(sensorSocketUrl);
+                        setCopyLabel("Copied");
+                        window.setTimeout(() => setCopyLabel("Copy link"), 1200);
+                      },
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Copy, {
+                          size: 14
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          children: copyLabel
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
                 className: "panel-divider"
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row panel-stack",
+                className: "panel-sub-section",
                 children: [
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-label-row",
+                    className: "panel-row",
                     children: [
                       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
                         className: "panel-label",
-                        children: "Gravity"
+                        children: "Status"
                       }, undefined, false, undefined, this),
                       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-value",
-                        children: physics.gravity.toFixed(1)
+                        className: `panel-value ${panelState.status === "Connected" ? "text-green" : ""}`,
+                        children: panelState.status
                       }, undefined, false, undefined, this)
                     ]
                   }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                    type: "range",
-                    min: "0",
-                    max: "100",
-                    step: "0.1",
-                    value: physics.gravity,
-                    onChange: (e) => updatePhysics({ gravity: parseFloat(e.target.value) })
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row panel-stack",
-                children: [
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-label-row",
+                    className: "panel-row panel-stack",
                     children: [
                       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
                         className: "panel-label",
-                        children: "Response"
+                        children: "Readout"
                       }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-value",
-                        children: physics.rotationResponse.toFixed(1)
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("pre", {
+                        id: "readout",
+                        children: panelState.readout
                       }, undefined, false, undefined, this)
                     ]
                   }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                    type: "range",
-                    min: "1",
-                    max: "30",
-                    step: "0.5",
-                    value: physics.rotationResponse,
-                    onChange: (e) => updatePhysics({ rotationResponse: parseFloat(e.target.value) })
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row panel-stack",
-                children: [
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-label-row",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-label",
-                        children: "Damping"
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-value",
-                        children: physics.linearDamping.toFixed(3)
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                    type: "range",
-                    min: "0.8",
-                    max: "1",
-                    step: "0.001",
-                    value: physics.linearDamping,
-                    onChange: (e) => updatePhysics({ linearDamping: parseFloat(e.target.value) })
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row panel-stack",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-label-row",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-label",
-                        children: "Bounciness"
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-value",
-                        children: physics.edgeBounce.toFixed(2)
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                    type: "range",
-                    min: "0",
-                    max: "1",
-                    step: "0.05",
-                    value: physics.edgeBounce,
-                    onChange: (e) => updatePhysics({ edgeBounce: parseFloat(e.target.value) })
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                  className: "panel-toggle-row",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                      className: "panel-label",
-                      children: "Invert horizontal"
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                      type: "checkbox",
-                      className: "panel-checkbox",
-                      checked: physics.invertX,
-                      onChange: (e) => updatePhysics({ invertX: e.target.checked })
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                  className: "panel-toggle-row",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                      className: "panel-label",
-                      children: "Invert vertical"
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                      type: "checkbox",
-                      className: "panel-checkbox",
-                      checked: physics.invertZ,
-                      onChange: (e) => updatePhysics({ invertZ: e.target.checked })
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                  className: "panel-toggle-row",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                      className: "panel-label",
-                      children: "Invert gravity"
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                      type: "checkbox",
-                      className: "panel-checkbox",
-                      checked: physics.invertGravity,
-                      onChange: (e) => updatePhysics({ invertGravity: e.target.checked })
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-row",
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                  className: "panel-toggle-row",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                      className: "panel-label",
-                      children: "Swap directions"
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                      type: "checkbox",
-                      className: "panel-checkbox",
-                      checked: physics.swapAxes,
-                      onChange: (e) => updatePhysics({ swapAxes: e.target.checked })
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                className: "panel-action-btn",
-                type: "button",
-                onClick: resetBall,
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV(RefreshCcw, {
-                    size: 14
+                    className: "panel-divider"
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    children: "Reset sphere"
-                  }, undefined, false, undefined, this)
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "panel-row panel-stack",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "panel-label-row",
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            className: "panel-label",
+                            children: "Gravity"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            className: "panel-value",
+                            children: physics.gravity.toFixed(1)
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                        type: "range",
+                        min: "0",
+                        max: "100",
+                        step: "0.1",
+                        value: physics.gravity,
+                        onChange: (e) => updatePhysics({ gravity: parseFloat(e.target.value) })
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "panel-row panel-stack",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "panel-label-row",
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            className: "panel-label",
+                            children: "Response"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            className: "panel-value",
+                            children: physics.rotationResponse.toFixed(1)
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                        type: "range",
+                        min: "1",
+                        max: "30",
+                        step: "0.5",
+                        value: physics.rotationResponse,
+                        onChange: (e) => updatePhysics({ rotationResponse: parseFloat(e.target.value) })
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "panel-row",
+                    children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
+                      className: "panel-toggle-row",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          className: "panel-label",
+                          children: "Invert Tilt"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                          type: "checkbox",
+                          checked: physics.invertX,
+                          onChange: (e) => updatePhysics({ invertX: e.target.checked, invertZ: e.target.checked })
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this)
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+                    className: "panel-action-btn",
+                    type: "button",
+                    onClick: resetBall,
+                    style: { marginTop: "8px" },
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV(RefreshCcw, {
+                        size: 14
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                        children: "Reset sphere"
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
                 ]
               }, undefined, true, undefined, this)
             ]
