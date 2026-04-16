@@ -24,10 +24,22 @@ const rooms = new Map<string, RoomState>();
 // Asset map for clean serving
 const assetFiles: Record<string, { path: string; contentType: string }> = {
   "/": { path: "./web/index.html", contentType: "text/html; charset=utf-8" },
-  "/styles.css": { path: "./web/styles.css", contentType: "text/css; charset=utf-8" },
-  "/app.js": { path: "./web/app.js", contentType: "text/javascript; charset=utf-8" },
-  "/model-viewer.js": { path: "./web/model-viewer.js", contentType: "text/javascript; charset=utf-8" },
-  "/models/scene.glb": { path: "./web/models/scene.glb", contentType: "model/gltf-binary" },
+  "/styles.css": {
+    path: "./web/styles.css",
+    contentType: "text/css; charset=utf-8",
+  },
+  "/app.js": {
+    path: "./web/app.js",
+    contentType: "text/javascript; charset=utf-8",
+  },
+  "/model-viewer.js": {
+    path: "./web/model-viewer.js",
+    contentType: "text/javascript; charset=utf-8",
+  },
+  "/models/scene.glb": {
+    path: "./web/models/scene.glb",
+    contentType: "model/gltf-binary",
+  },
 };
 
 function createRoom(): RoomState {
@@ -57,7 +69,9 @@ function deleteRoomIfEmpty(roomId: string, room: RoomState) {
   }
 }
 
-function decodeMessage(message: string | Buffer | ArrayBuffer | Uint8Array): string {
+function decodeMessage(
+  message: string | Buffer | ArrayBuffer | Uint8Array,
+): string {
   if (typeof message === "string") {
     return message;
   }
@@ -90,7 +104,9 @@ function broadcastRoom(roomId: string, room: RoomState) {
 }
 
 function upgradeDataFromUrl(url: URL): SocketData {
-  const roomId = url.searchParams.get("room") || crypto.randomUUID().replace(/-/g, "").slice(0, 8);
+  const roomId =
+    url.searchParams.get("room") ||
+    crypto.randomUUID().replace(/-/g, "").slice(0, 8);
   const role = url.searchParams.get("role") === "sensor" ? "sensor" : "viewer";
 
   return {
@@ -120,7 +136,7 @@ const server = Bun.serve({
 
     // 3. SPA Fallback / Health check
     if (url.pathname === "/health") return new Response("OK");
-    
+
     // Serve index.html for unknown paths to support client-side routing
     if (request.method === "GET") {
       const indexPath = assetFiles["/"].path;
@@ -134,7 +150,9 @@ const server = Bun.serve({
   websocket: {
     open(socket: ServerWebSocket<SocketData>) {
       const room = getRoom(socket.data.roomId);
-      console.log(`[WS] Open: Room ${socket.data.roomId} as ${socket.data.role}`);
+      console.log(
+        `[WS] Open: Room ${socket.data.roomId} as ${socket.data.role}`,
+      );
 
       if (socket.data.role === "sensor") {
         if (room.sensor && room.sensor !== socket) {

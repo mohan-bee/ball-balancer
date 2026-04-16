@@ -2,6 +2,8 @@ import { describe, expect, it } from "bun:test";
 import * as THREE from "three";
 import {
   createPhysicsState,
+  getBoardLimit,
+  hasBallLeftBoard,
   stepPhysics,
   syncVisualState,
   updateTiltTargets,
@@ -45,8 +47,28 @@ describe("model viewer physics", () => {
       stepPhysics(state, 1 / 60);
     }
 
-    expect(state.ballLocalPos.x).toBeGreaterThan(0.2);
-    expect(state.ballPos.y).toBeGreaterThan(state.planeCenter.y);
+    const centerToBall = state.ballPos.clone().sub(state.planeCenter);
+
+    expect(Math.abs(state.ballLocalPos.x)).toBeGreaterThan(0.2);
+    expect(centerToBall.dot(state.planeNormal)).toBeCloseTo(
+      state.ballRadius,
+      5,
+    );
     expect(state.ballVel.length()).toBeGreaterThan(0.1);
+  });
+
+  it("lets the sphere leave the board when bounds are disabled", () => {
+    const state = createPhysicsState();
+
+    updateTiltTargets(state, 1.2, 0);
+
+    for (let index = 0; index < 220; index += 1) {
+      stepPhysics(state, 1 / 60, { enforceBounds: false });
+    }
+
+    expect(Math.abs(state.ballLocalPos.x)).toBeGreaterThan(
+      getBoardLimit(state.ballRadius),
+    );
+    expect(hasBallLeftBoard(state)).toBe(true);
   });
 });

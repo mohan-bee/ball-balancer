@@ -25158,6 +25158,8 @@ function createViewerScene(stage) {
   const camera = new PerspectiveCamera(35, 1, 0.1, 100);
   camera.position.set(0, 30, 16);
   camera.up.set(0, 0, -1);
+  const cameraTarget = new Vector3(0, 1.4, 0);
+  camera.lookAt(cameraTarget);
   const renderer = new WebGLRenderer({
     antialias: true,
     alpha: true,
@@ -25201,6 +25203,7 @@ function createViewerScene(stage) {
   return {
     scene,
     camera,
+    cameraTarget,
     renderer,
     trayGroup,
     trayShearGroup,
@@ -25208,63 +25211,11 @@ function createViewerScene(stage) {
   };
 }
 
-// web/model-viewer/models.ts
+// web/model-viewer/objects/constants.ts
 var BOARD_HALF_SIZE = 4.5;
 var BOARD_THICKNESS = 0.34;
 var BALL_RADIUS = 0.52;
-function createFloatingBoard(trayShearGroup, setStatus) {
-  const board = new Group;
-  const deck = new Mesh(new BoxGeometry(BOARD_HALF_SIZE * 2, BOARD_THICKNESS, BOARD_HALF_SIZE * 2), new MeshStandardMaterial({
-    color: 8246268,
-    metalness: 0.08,
-    roughness: 0.28
-  }));
-  deck.castShadow = true;
-  deck.receiveShadow = true;
-  board.add(deck);
-  const topInset = new Mesh(new BoxGeometry(BOARD_HALF_SIZE * 1.88, BOARD_THICKNESS * 0.3, BOARD_HALF_SIZE * 1.88), new MeshStandardMaterial({
-    color: 14742270,
-    emissive: 1013358,
-    emissiveIntensity: 0.18,
-    metalness: 0.05,
-    roughness: 0.42
-  }));
-  topInset.position.y = BOARD_THICKNESS * 0.34;
-  board.add(topInset);
-  const rimMaterial = new MeshStandardMaterial({
-    color: 536393,
-    metalness: 0.2,
-    roughness: 0.38
-  });
-  const rimThickness = 0.28;
-  const rimHeight = 0.4;
-  const rimOffset = BOARD_HALF_SIZE - rimThickness * 0.45;
-  const rims = [
-    { position: [0, rimHeight * 0.3, rimOffset], size: [BOARD_HALF_SIZE * 2, rimHeight, rimThickness] },
-    { position: [0, rimHeight * 0.3, -rimOffset], size: [BOARD_HALF_SIZE * 2, rimHeight, rimThickness] },
-    { position: [rimOffset, rimHeight * 0.3, 0], size: [rimThickness, rimHeight, BOARD_HALF_SIZE * 2] },
-    { position: [-rimOffset, rimHeight * 0.3, 0], size: [rimThickness, rimHeight, BOARD_HALF_SIZE * 2] }
-  ];
-  for (const rim of rims) {
-    const mesh = new Mesh(new BoxGeometry(...rim.size), rimMaterial);
-    mesh.position.set(...rim.position);
-    board.add(mesh);
-  }
-  const undersideGlow = new Mesh(new CylinderGeometry(BOARD_HALF_SIZE * 0.92, BOARD_HALF_SIZE * 1.02, 0.12, 48), new MeshStandardMaterial({
-    color: 988970,
-    emissive: 3718648,
-    emissiveIntensity: 0.25,
-    transparent: true,
-    opacity: 0.72,
-    metalness: 0.1,
-    roughness: 0.62
-  }));
-  undersideGlow.position.y = -(BOARD_THICKNESS * 0.8);
-  board.add(undersideGlow);
-  trayShearGroup.add(board);
-  setStatus("Model: floating board ready");
-  return board;
-}
+// web/model-viewer/objects/ball.ts
 function createBallMesh(ballGroup, radius = BALL_RADIUS) {
   const material = new MeshStandardMaterial({
     color: 16478597,
@@ -25293,7 +25244,139 @@ function createBallMesh(ballGroup, radius = BALL_RADIUS) {
   ballGroup.add(ball);
   return ball;
 }
-
+// web/model-viewer/objects/board.ts
+function createBoardRims() {
+  const rimThickness = 0.28;
+  const rimHeight = 1;
+  const rimOffset = BOARD_HALF_SIZE - rimThickness * 0.45;
+  return [
+    {
+      position: [0, rimHeight * 0.3, rimOffset],
+      size: [BOARD_HALF_SIZE * 2, rimHeight, rimThickness]
+    },
+    {
+      position: [0, rimHeight * 0.3, -rimOffset],
+      size: [BOARD_HALF_SIZE * 2, rimHeight, rimThickness]
+    },
+    {
+      position: [rimOffset, rimHeight * 0.3, 0],
+      size: [rimThickness, rimHeight, BOARD_HALF_SIZE * 2]
+    },
+    {
+      position: [-rimOffset, rimHeight * 0.3, 0],
+      size: [rimThickness, rimHeight, BOARD_HALF_SIZE * 2]
+    }
+  ];
+}
+function createFloatingBoard(trayShearGroup, setStatus, options = {}) {
+  const { withRims = true, theme = "v1" } = options;
+  const board = new Group;
+  const deckColor = theme === "v2" ? 2763306 : theme === "v3" ? 8141549 : 8246268;
+  const insetColor = theme === "v2" ? 3815994 : theme === "v3" ? 10980346 : 14742270;
+  const insetEmissive = theme === "v2" ? 0 : theme === "v3" ? 4988309 : 1013358;
+  const insetEmissiveIntensity = theme === "v2" ? 0 : theme === "v3" ? 0.2 : 0.18;
+  const rimColor = theme === "v2" ? 986896 : theme === "v3" ? 3018853 : 536393;
+  const glowEmissive = theme === "v2" ? 1118481 : theme === "v3" ? 10980346 : 3718648;
+  const glowEmissiveIntensity = theme === "v2" ? 0.08 : theme === "v3" ? 0.28 : 0.25;
+  const deck = new Mesh(new BoxGeometry(BOARD_HALF_SIZE * 2, BOARD_THICKNESS, BOARD_HALF_SIZE * 2), new MeshStandardMaterial({
+    color: deckColor,
+    metalness: 0.08,
+    roughness: theme === "v2" ? 0.55 : theme === "v3" ? 0.35 : 0.28
+  }));
+  deck.castShadow = true;
+  deck.receiveShadow = true;
+  board.add(deck);
+  const topInset = new Mesh(new BoxGeometry(BOARD_HALF_SIZE * 1.88, BOARD_THICKNESS * 0.3, BOARD_HALF_SIZE * 1.88), new MeshStandardMaterial({
+    color: insetColor,
+    emissive: insetEmissive,
+    emissiveIntensity: insetEmissiveIntensity,
+    metalness: 0.05,
+    roughness: theme === "v2" ? 0.6 : theme === "v3" ? 0.46 : 0.42
+  }));
+  topInset.position.y = BOARD_THICKNESS * 0.34;
+  board.add(topInset);
+  if (withRims) {
+    const rimMaterial = new MeshStandardMaterial({
+      color: rimColor,
+      metalness: 0.2,
+      roughness: 0.5
+    });
+    for (const rim of createBoardRims()) {
+      const mesh = new Mesh(new BoxGeometry(...rim.size), rimMaterial);
+      mesh.position.set(...rim.position);
+      board.add(mesh);
+    }
+  }
+  const undersideGlow = new Mesh(new CylinderGeometry(BOARD_HALF_SIZE * 0.92, BOARD_HALF_SIZE * 1.02, 0.12, 48), new MeshStandardMaterial({
+    color: 988970,
+    emissive: glowEmissive,
+    emissiveIntensity: glowEmissiveIntensity,
+    transparent: true,
+    opacity: theme === "v2" ? 0.55 : theme === "v3" ? 0.74 : 0.72,
+    metalness: 0.1,
+    roughness: 0.62
+  }));
+  undersideGlow.position.y = -(BOARD_THICKNESS * 0.8);
+  board.add(undersideGlow);
+  trayShearGroup.add(board);
+  setStatus("Model: floating board ready");
+  return board;
+}
+// web/model-viewer/objects/path-track.ts
+function createPathTrack(trayShearGroup, setStatus, options = {}) {
+  const length = options.length ?? 16;
+  const width = options.width ?? 2.4;
+  const tileSize = options.tileSize ?? 0.8;
+  const track = new Group;
+  const base = new Mesh(new BoxGeometry(width, BOARD_THICKNESS, length), new MeshStandardMaterial({
+    color: 725536,
+    metalness: 0.06,
+    roughness: 0.82
+  }));
+  base.receiveShadow = true;
+  track.add(base);
+  const tileGeo = new BoxGeometry(tileSize * 0.92, BOARD_THICKNESS * 0.28, tileSize * 0.92);
+  const tileMatA = new MeshStandardMaterial({
+    color: 9133302,
+    metalness: 0.08,
+    roughness: 0.48,
+    emissive: 3018853,
+    emissiveIntensity: 0.12
+  });
+  const tileMatB = new MeshStandardMaterial({
+    color: 959977,
+    metalness: 0.08,
+    roughness: 0.5,
+    emissive: 536393,
+    emissiveIntensity: 0.08
+  });
+  const countZ = Math.floor(length / tileSize);
+  const countX = Math.floor(width / tileSize);
+  const zStart = -((countZ - 1) * tileSize) / 2;
+  const xStart = -((countX - 1) * tileSize) / 2;
+  for (let zi = 0;zi < countZ; zi += 1) {
+    for (let xi = 0;xi < countX; xi += 1) {
+      const tile = new Mesh(tileGeo, (xi + zi) % 2 === 0 ? tileMatA : tileMatB);
+      tile.position.set(xStart + xi * tileSize, BOARD_THICKNESS * 0.26, zStart + zi * tileSize);
+      tile.receiveShadow = true;
+      track.add(tile);
+    }
+  }
+  trayShearGroup.add(track);
+  setStatus("Model: path track ready");
+  const halfWidth = width / 2;
+  const halfLength = length / 2;
+  return {
+    object: track,
+    bounds: {
+      minX: -halfWidth,
+      maxX: halfWidth,
+      minZ: -halfLength,
+      maxZ: halfLength
+    },
+    spawn: { x: 0, z: -halfLength + tileSize * 1.25 }
+  };
+}
 // web/model-viewer/physics.ts
 var DEFAULT_CONFIG = {
   gravity: 9.81 * 3,
@@ -25306,6 +25389,9 @@ var DEFAULT_CONFIG = {
   invertGravity: false,
   swapAxes: false
 };
+function getBoardLimit(ballRadius) {
+  return BOARD_HALF_SIZE - ballRadius * 0.55;
+}
 function roundRotation(value) {
   return Math.round(value * 100) / 100;
 }
@@ -25323,6 +25409,31 @@ function syncBallWorldPosition(state) {
   state.ballPos.copy(state.planeCenter).add(worldX).add(worldZ).add(lift);
   const tangentVelocity = state.planeAxisX.clone().multiplyScalar(state.ballLocalVel.x).add(state.planeAxisZ.clone().multiplyScalar(state.ballLocalVel.y));
   state.ballVel.copy(tangentVelocity);
+}
+function applyBoardAcceleration(state, delta) {
+  const { config } = state;
+  const baseAccel = config.gravity * config.accelerationFactor;
+  const accelX = -Math.sin(state.currentRotationZ) * baseAccel;
+  const accelZ = Math.sin(state.currentRotationX) * baseAccel;
+  const multiplier = config.invertGravity ? -1 : 1;
+  if (config.swapAxes) {
+    state.ballLocalVel.x += accelZ * delta * multiplier;
+    state.ballLocalVel.y += accelX * delta * multiplier;
+    return;
+  }
+  state.ballLocalVel.x += accelX * delta * multiplier;
+  state.ballLocalVel.y += accelZ * delta * multiplier;
+}
+function applyBoardBounds(state) {
+  const limit = getBoardLimit(state.ballRadius);
+  if (Math.abs(state.ballLocalPos.x) > limit) {
+    state.ballLocalPos.x = Math.sign(state.ballLocalPos.x) * limit;
+    state.ballLocalVel.x *= -state.config.edgeBounce;
+  }
+  if (Math.abs(state.ballLocalPos.y) > limit) {
+    state.ballLocalPos.y = Math.sign(state.ballLocalPos.y) * limit;
+    state.ballLocalVel.y *= -state.config.edgeBounce;
+  }
 }
 function createPhysicsState(planeCenter = new Vector3(0, 1.4, 0)) {
   const state = {
@@ -25353,47 +25464,44 @@ function updateTiltTargets(state, x, z) {
   state.targetRotationX = roundRotation(MathUtils.clamp(vertical * 0.8, -0.95, 0.95));
   state.targetRotationZ = roundRotation(MathUtils.clamp(horizontal * 0.8, -0.95, 0.95));
 }
-function stepPhysics(state, delta) {
+function stepTrayRotation(state, delta) {
   const { config } = state;
   const blend = 1 - Math.exp(-config.rotationResponse * delta);
   state.currentRotationX = MathUtils.lerp(state.currentRotationX, state.targetRotationX, blend);
   state.currentRotationZ = MathUtils.lerp(state.currentRotationZ, state.targetRotationZ, blend);
-  const baseAccel = config.gravity * config.accelerationFactor;
-  const accelX = -Math.sin(state.currentRotationZ) * baseAccel;
-  const accelZ = Math.sin(state.currentRotationX) * baseAccel;
-  const multiplier = config.invertGravity ? -1 : 1;
-  if (config.swapAxes) {
-    state.ballLocalVel.x += accelZ * delta * multiplier;
-    state.ballLocalVel.y += accelX * delta * multiplier;
-  } else {
-    state.ballLocalVel.x += accelX * delta * multiplier;
-    state.ballLocalVel.y += accelZ * delta * multiplier;
-  }
+  updatePlaneBasis(state);
+}
+function stepBallOnBoard(state, delta, options = {}) {
+  const { enforceBounds = true } = options;
+  const { config } = state;
+  applyBoardAcceleration(state, delta);
   const damping = Math.pow(config.linearDamping, delta * 60);
   state.ballLocalVel.multiplyScalar(damping);
   state.ballLocalPos.x += state.ballLocalVel.x * delta;
   state.ballLocalPos.y += state.ballLocalVel.y * delta;
-  const limit = BOARD_HALF_SIZE - state.ballRadius * 0.55;
-  if (Math.abs(state.ballLocalPos.x) > limit) {
-    state.ballLocalPos.x = Math.sign(state.ballLocalPos.x) * limit;
-    state.ballLocalVel.x *= -config.edgeBounce;
+  if (enforceBounds) {
+    applyBoardBounds(state);
   }
-  if (Math.abs(state.ballLocalPos.y) > limit) {
-    state.ballLocalPos.y = Math.sign(state.ballLocalPos.y) * limit;
-    state.ballLocalVel.y *= -config.edgeBounce;
-  }
-  updatePlaneBasis(state);
   syncBallWorldPosition(state);
+}
+function stepPhysics(state, delta, options = {}) {
+  stepTrayRotation(state, delta);
+  stepBallOnBoard(state, delta, options);
+}
+function hasBallLeftBoard(state) {
+  const edgeThreshold = getBoardLimit(state.ballRadius) + state.ballRadius * 0.9;
+  return Math.abs(state.ballLocalPos.x) > edgeThreshold || Math.abs(state.ballLocalPos.y) > edgeThreshold;
 }
 function updatePhysicsConfig(state, patch) {
   state.config = { ...state.config, ...patch };
 }
-function resetBall(state) {
-  state.ballLocalPos.set(0, 0);
+function resetBall(state, spawn) {
+  state.ballLocalPos.set(spawn?.x ?? 0, spawn?.z ?? 0);
   state.ballLocalVel.set(0, 0);
+  state.lastBallWorldPos = null;
   syncBallWorldPosition(state);
 }
-function syncVisualState(state, trayGroup, ballMesh) {
+function syncVisualState(state, trayGroup, ballMesh, ballPositionOverride) {
   trayGroup.rotation.x = state.currentRotationX;
   trayGroup.rotation.z = state.currentRotationZ;
   trayGroup.rotation.y = 0;
@@ -25401,32 +25509,131 @@ function syncVisualState(state, trayGroup, ballMesh) {
   if (!ballMesh) {
     return;
   }
-  ballMesh.position.copy(state.ballPos);
+  const visualBallPosition = ballPositionOverride ?? state.ballPos;
+  ballMesh.position.copy(visualBallPosition);
   if (state.lastBallWorldPos) {
-    const displacement = state.ballPos.clone().sub(state.lastBallWorldPos);
+    const displacement = visualBallPosition.clone().sub(state.lastBallWorldPos);
     const distance = displacement.length();
     if (distance > 0.00001) {
       const axis = new Vector3().crossVectors(state.planeNormal, displacement).normalize();
       ballMesh.rotateOnWorldAxis(axis, distance / state.ballRadius);
     }
   }
-  state.lastBallWorldPos = state.ballPos.clone();
+  state.lastBallWorldPos = visualBallPosition.clone();
 }
 
-// web/model-viewer-entry.ts
-var stage = document.getElementById("model-stage");
-var status = document.getElementById("model-status");
-function setStatus(message) {
-  if (status) {
-    status.textContent = message;
-  }
+// web/model-viewer/viewer/dom.ts
+function createStatusSetter(status) {
+  return (message) => {
+    if (status) {
+      status.textContent = message;
+    }
+  };
 }
-if (stage) {
-  setStatus("Model: loading...");
-  const { scene, camera, renderer, trayGroup, trayShearGroup, ballGroup } = createViewerScene(stage);
+function createResizeHandler(stage, camera, renderer) {
+  return () => {
+    const width = stage.clientWidth || 1;
+    const height = stage.clientHeight || 1;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height, false);
+  };
+}
+
+// web/model-viewer/viewer/notices.ts
+function dispatchViewerNotice(message) {
+  window.dispatchEvent(new CustomEvent("viewer-notice", { detail: { message } }));
+}
+
+// web/model-viewer/viewer/fall.ts
+var FALL_ACCELERATION = 24;
+var RESPAWN_DELAY_SECONDS = 1.05;
+var FALL_DISTANCE_LIMIT = -8;
+function createFallingState() {
+  return {
+    active: false,
+    position: new Vector3,
+    velocity: new Vector3,
+    respawnTimer: 0
+  };
+}
+function beginBallFall(fallingState, startPosition, startVelocity) {
+  fallingState.active = true;
+  fallingState.position.copy(startPosition);
+  fallingState.velocity.copy(startVelocity);
+  fallingState.velocity.y = Math.min(fallingState.velocity.y, -1.5);
+  fallingState.respawnTimer = 0;
+  dispatchViewerNotice("Ball fell off the board. Respawning...");
+}
+function resetAfterFall(fallingState) {
+  fallingState.active = false;
+  fallingState.velocity.set(0, 0, 0);
+  fallingState.respawnTimer = 0;
+}
+function stepFallingBall(fallingState, delta) {
+  fallingState.velocity.y -= FALL_ACCELERATION * delta;
+  fallingState.position.addScaledVector(fallingState.velocity, delta);
+}
+function shouldRespawn(fallingState, delta) {
+  if (fallingState.position.y >= FALL_DISTANCE_LIMIT) {
+    return false;
+  }
+  fallingState.respawnTimer += delta;
+  return fallingState.respawnTimer >= RESPAWN_DELAY_SECONDS;
+}
+
+// web/model-viewer/viewer/mount.ts
+function mountModelViewer(stage, status, version = "v1") {
+  const setStatus = createStatusSetter(status);
+  setStatus(`Model: ${version.toUpperCase()} loading...`);
+  dispatchViewerNotice(`${version.toUpperCase()} loading...`);
+  const {
+    scene,
+    camera,
+    cameraTarget,
+    renderer,
+    trayGroup,
+    trayShearGroup,
+    ballGroup
+  } = createViewerScene(stage);
   const clock = new Clock;
   const physics = createPhysicsState();
   const ballMesh = createBallMesh(ballGroup, physics.ballRadius);
+  const fallingState = createFallingState();
+  const viewerConfig = (() => {
+    if (version === "v3") {
+      return {
+        enforceBounds: false,
+        cameraFollow: true,
+        board: "path"
+      };
+    }
+    return {
+      enforceBounds: version === "v1",
+      cameraFollow: false,
+      board: "floating"
+    };
+  })();
+  const pathTrack = viewerConfig.board === "path" ? createPathTrack(trayShearGroup, setStatus, {
+    length: 18,
+    width: 2.6,
+    tileSize: 0.85
+  }) : null;
+  if (viewerConfig.board === "floating") {
+    createFloatingBoard(trayShearGroup, setStatus, {
+      withRims: version === "v1",
+      theme: version
+    });
+  }
+  const spawn = pathTrack?.spawn ?? { x: 0, z: 0 };
+  resetBall(physics, spawn);
+  if (viewerConfig.cameraFollow) {
+    camera.position.set(0, 14, 12);
+  } else {
+    camera.position.set(0, 30, 16);
+  }
+  cameraTarget.set(0, physics.planeCenter.y, 0);
+  camera.lookAt(cameraTarget);
   const onTiltState = (event) => {
     const customEvent = event;
     if (typeof customEvent.detail?.x === "number" && typeof customEvent.detail?.z === "number") {
@@ -25435,39 +25642,113 @@ if (stage) {
   };
   const onPhysicsConfig = (event) => {
     const customEvent = event;
-    updatePhysicsConfig(physics, customEvent.detail);
+    updatePhysicsConfig(physics, customEvent.detail ?? {});
   };
   const onPhysicsReset = () => {
-    resetBall(physics);
+    resetAfterFall(fallingState);
+    resetBall(physics, spawn);
+    dispatchViewerNotice(`${version.toUpperCase()} sphere reset.`);
   };
   window.addEventListener("tilt-state", onTiltState);
   window.addEventListener("physics-config", onPhysicsConfig);
   window.addEventListener("physics-reset", onPhysicsReset);
-  createFloatingBoard(trayShearGroup, setStatus);
-  camera.lookAt(0, physics.planeCenter.y, 0);
-  const resize = () => {
-    const width = stage.clientWidth || 1;
-    const height = stage.clientHeight || 1;
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-    renderer.setSize(width, height, false);
-  };
+  const resize = createResizeHandler(stage, camera, renderer);
   resize();
   const resizeObserver = new ResizeObserver(resize);
   resizeObserver.observe(stage);
   let frame = 0;
+  let hasRenderedOnce = false;
+  const cameraPos = camera.position.clone();
+  const stepCameraFollow = (delta) => {
+    if (!viewerConfig.cameraFollow) {
+      return;
+    }
+    const desiredTarget = (fallingState.active ? fallingState.position : physics.ballPos).clone();
+    desiredTarget.y = physics.planeCenter.y;
+    const blend = 1 - Math.exp(-5.5 * delta);
+    cameraTarget.lerp(desiredTarget, blend);
+    const desiredPos = cameraTarget.clone().add(new Vector3(0, 11.5, 10.5));
+    cameraPos.lerp(desiredPos, blend);
+    camera.position.copy(cameraPos);
+    camera.lookAt(cameraTarget);
+  };
   const animate = () => {
     frame = window.requestAnimationFrame(animate);
     const delta = Math.min(clock.getDelta(), 0.05);
-    stepPhysics(physics, delta);
-    syncVisualState(physics, trayGroup, ballMesh);
+    if (fallingState.active) {
+      stepTrayRotation(physics, delta);
+      stepFallingBall(fallingState, delta);
+      if (shouldRespawn(fallingState, delta)) {
+        resetAfterFall(fallingState);
+        resetBall(physics, spawn);
+        dispatchViewerNotice("Ball respawned.");
+      }
+      syncVisualState(physics, trayGroup, ballMesh, fallingState.position);
+    } else {
+      stepPhysics(physics, delta, {
+        enforceBounds: viewerConfig.enforceBounds
+      });
+      if (version === "v3") {
+        const bounds = pathTrack?.bounds;
+        if (bounds) {
+          const x = physics.ballLocalPos.x;
+          const z = physics.ballLocalPos.y;
+          if (x < bounds.minX || x > bounds.maxX || z < bounds.minZ || z > bounds.maxZ) {
+            beginBallFall(fallingState, physics.ballPos, physics.ballVel);
+          }
+        }
+      } else {
+        if (!viewerConfig.enforceBounds && hasBallLeftBoard(physics)) {
+          beginBallFall(fallingState, physics.ballPos, physics.ballVel);
+        }
+      }
+      syncVisualState(physics, trayGroup, ballMesh);
+    }
+    stepCameraFollow(delta);
     renderer.render(scene, camera);
+    if (!hasRenderedOnce) {
+      hasRenderedOnce = true;
+      dispatchViewerNotice(`${version.toUpperCase()} ready.`);
+    }
   };
   animate();
-  window.addEventListener("beforeunload", () => {
+  return () => {
     window.cancelAnimationFrame(frame);
     resizeObserver.disconnect();
     window.removeEventListener("tilt-state", onTiltState);
+    window.removeEventListener("physics-config", onPhysicsConfig);
+    window.removeEventListener("physics-reset", onPhysicsReset);
+    if (renderer.domElement.parentElement === stage) {
+      stage.removeChild(renderer.domElement);
+    }
     renderer.dispose();
-  });
+  };
+}
+
+// web/model-viewer-entry.ts
+function resolveInitialVersion() {
+  const url = new URL(window.location.href);
+  const version = url.searchParams.get("version");
+  return version === "v2" || version === "v3" || version === "v1" ? version : "v1";
+}
+var stage = document.getElementById("model-stage");
+var status = document.getElementById("model-status");
+if (stage) {
+  let cleanup = null;
+  const mountSelectedVersion = (version) => {
+    cleanup?.();
+    cleanup = null;
+    const nextVersion2 = version === "v2" || version === "v3" || version === "v1" ? version : "v1";
+    cleanup = mountModelViewer(stage, status, nextVersion2);
+  };
+  const onVersionChange = (event) => {
+    const customEvent = event;
+    mountSelectedVersion(customEvent.detail?.version ?? "v1");
+  };
+  mountSelectedVersion(resolveInitialVersion());
+  window.addEventListener("viewer-version-change", onVersionChange);
+  window.addEventListener("beforeunload", () => {
+    window.removeEventListener("viewer-version-change", onVersionChange);
+    cleanup?.();
+  }, { once: true });
 }

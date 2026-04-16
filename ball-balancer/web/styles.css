@@ -15,7 +15,35 @@ body {
   overflow: hidden;
   background: #05070c;
   color: #edf2f7;
-  font-family: "Poppins", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    "Poppins",
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+.viewer-notice {
+  position: fixed;
+  left: 50%;
+  top: 16px;
+  transform: translateX(-50%);
+  padding: 10px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  background: rgba(10, 14, 20, 0.88);
+  backdrop-filter: blur(12px);
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 4;
+  max-width: min(560px, calc(100vw - 32px));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .model-stage {
@@ -42,6 +70,59 @@ body {
   pointer-events: none;
 }
 
+.scene-loading {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(4, 6, 12, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 140ms ease,
+    visibility 140ms ease;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.scene-loading.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scene-loading-card {
+  width: min(340px, calc(100vw - 32px));
+  padding: 14px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 14px;
+  background: rgba(10, 14, 20, 0.92);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+}
+
+.scene-loading-spinner {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(255, 255, 255, 0.18);
+  border-top-color: rgba(56, 189, 248, 0.95);
+  animation: scene-spin 0.9s linear infinite;
+}
+
+.scene-loading-text {
+  font-size: 12px;
+  color: #cbd5e1;
+  letter-spacing: 0.02em;
+}
+
+@keyframes scene-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 .panel {
   position: absolute;
   top: 16px;
@@ -55,6 +136,75 @@ body {
 
 .panel-right {
   right: 16px;
+}
+
+.version-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(560px, calc(100vw - 24px));
+  display: grid;
+  grid-template-columns: 40px 1fr 40px;
+  gap: 10px;
+  align-items: center;
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.version-dock-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 14, 20, 0.9);
+  color: #e2e8f0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.version-dock-btn:hover {
+  background: rgba(18, 24, 34, 0.96);
+}
+
+.version-dock-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.version-dock-card {
+  padding: 10px 12px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 14, 20, 0.82);
+  backdrop-filter: blur(12px);
+  min-height: 40px;
+  display: grid;
+  gap: 2px;
+}
+
+.version-dock-kicker {
+  color: #8b949e;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.version-dock-title {
+  color: #edf2f7;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.version-dock-subtitle {
+  color: #94a3b8;
+  font-size: 11px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .panel-toggle {
@@ -239,6 +389,11 @@ body {
   .panel-right {
     left: 12px;
     right: 12px;
+  }
+
+  .version-dock {
+    bottom: 12px;
+    width: calc(100vw - 24px);
   }
 }
 

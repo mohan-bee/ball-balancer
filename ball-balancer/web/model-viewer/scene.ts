@@ -8,6 +8,9 @@ export function createViewerScene(stage: HTMLElement) {
   camera.position.set(0, 30, 16);
   camera.up.set(0, 0, -1);
 
+  const cameraTarget = new THREE.Vector3(0, 1.4, 0);
+  camera.lookAt(cameraTarget);
+
   const renderer = new THREE.WebGLRenderer({
     antialias: true,
     alpha: true,
@@ -55,7 +58,14 @@ export function createViewerScene(stage: HTMLElement) {
   fillLight.position.set(-7, 4, 7);
   scene.add(fillLight);
 
-  const topLight = new THREE.SpotLight(0xffffff, 2.8, 100, Math.PI / 5, 0.45, 1);
+  const topLight = new THREE.SpotLight(
+    0xffffff,
+    2.8,
+    100,
+    Math.PI / 5,
+    0.45,
+    1,
+  );
   topLight.position.set(0, 18, 8);
   topLight.target.position.set(0, 0, 0);
   scene.add(topLight);
@@ -80,6 +90,7 @@ export function createViewerScene(stage: HTMLElement) {
   return {
     scene,
     camera,
+    cameraTarget,
     renderer,
     trayGroup,
     trayShearGroup,

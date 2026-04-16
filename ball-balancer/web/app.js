@@ -30,6 +30,269 @@ var __toESM = (mod, isNodeMode, target) => {
 };
 var __commonJS = (cb, mod) => () => (mod || cb((mod = { exports: {} }).exports, mod), mod.exports);
 
+// node_modules/scheduler/cjs/scheduler.development.js
+var require_scheduler_development = __commonJS((exports) => {
+  (function() {
+    function performWorkUntilDeadline() {
+      needsPaint = false;
+      if (isMessageLoopRunning) {
+        var currentTime = exports.unstable_now();
+        startTime = currentTime;
+        var hasMoreWork = true;
+        try {
+          a: {
+            isHostCallbackScheduled = false;
+            isHostTimeoutScheduled && (isHostTimeoutScheduled = false, localClearTimeout(taskTimeoutID), taskTimeoutID = -1);
+            isPerformingWork = true;
+            var previousPriorityLevel = currentPriorityLevel;
+            try {
+              b: {
+                advanceTimers(currentTime);
+                for (currentTask = peek(taskQueue);currentTask !== null && !(currentTask.expirationTime > currentTime && shouldYieldToHost()); ) {
+                  var callback = currentTask.callback;
+                  if (typeof callback === "function") {
+                    currentTask.callback = null;
+                    currentPriorityLevel = currentTask.priorityLevel;
+                    var continuationCallback = callback(currentTask.expirationTime <= currentTime);
+                    currentTime = exports.unstable_now();
+                    if (typeof continuationCallback === "function") {
+                      currentTask.callback = continuationCallback;
+                      advanceTimers(currentTime);
+                      hasMoreWork = true;
+                      break b;
+                    }
+                    currentTask === peek(taskQueue) && pop(taskQueue);
+                    advanceTimers(currentTime);
+                  } else
+                    pop(taskQueue);
+                  currentTask = peek(taskQueue);
+                }
+                if (currentTask !== null)
+                  hasMoreWork = true;
+                else {
+                  var firstTimer = peek(timerQueue);
+                  firstTimer !== null && requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
+                  hasMoreWork = false;
+                }
+              }
+              break a;
+            } finally {
+              currentTask = null, currentPriorityLevel = previousPriorityLevel, isPerformingWork = false;
+            }
+            hasMoreWork = undefined;
+          }
+        } finally {
+          hasMoreWork ? schedulePerformWorkUntilDeadline() : isMessageLoopRunning = false;
+        }
+      }
+    }
+    function push(heap, node) {
+      var index = heap.length;
+      heap.push(node);
+      a:
+        for (;0 < index; ) {
+          var parentIndex = index - 1 >>> 1, parent = heap[parentIndex];
+          if (0 < compare(parent, node))
+            heap[parentIndex] = node, heap[index] = parent, index = parentIndex;
+          else
+            break a;
+        }
+    }
+    function peek(heap) {
+      return heap.length === 0 ? null : heap[0];
+    }
+    function pop(heap) {
+      if (heap.length === 0)
+        return null;
+      var first = heap[0], last = heap.pop();
+      if (last !== first) {
+        heap[0] = last;
+        a:
+          for (var index = 0, length = heap.length, halfLength = length >>> 1;index < halfLength; ) {
+            var leftIndex = 2 * (index + 1) - 1, left = heap[leftIndex], rightIndex = leftIndex + 1, right = heap[rightIndex];
+            if (0 > compare(left, last))
+              rightIndex < length && 0 > compare(right, left) ? (heap[index] = right, heap[rightIndex] = last, index = rightIndex) : (heap[index] = left, heap[leftIndex] = last, index = leftIndex);
+            else if (rightIndex < length && 0 > compare(right, last))
+              heap[index] = right, heap[rightIndex] = last, index = rightIndex;
+            else
+              break a;
+          }
+      }
+      return first;
+    }
+    function compare(a, b) {
+      var diff = a.sortIndex - b.sortIndex;
+      return diff !== 0 ? diff : a.id - b.id;
+    }
+    function advanceTimers(currentTime) {
+      for (var timer = peek(timerQueue);timer !== null; ) {
+        if (timer.callback === null)
+          pop(timerQueue);
+        else if (timer.startTime <= currentTime)
+          pop(timerQueue), timer.sortIndex = timer.expirationTime, push(taskQueue, timer);
+        else
+          break;
+        timer = peek(timerQueue);
+      }
+    }
+    function handleTimeout(currentTime) {
+      isHostTimeoutScheduled = false;
+      advanceTimers(currentTime);
+      if (!isHostCallbackScheduled)
+        if (peek(taskQueue) !== null)
+          isHostCallbackScheduled = true, isMessageLoopRunning || (isMessageLoopRunning = true, schedulePerformWorkUntilDeadline());
+        else {
+          var firstTimer = peek(timerQueue);
+          firstTimer !== null && requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
+        }
+    }
+    function shouldYieldToHost() {
+      return needsPaint ? true : exports.unstable_now() - startTime < frameInterval ? false : true;
+    }
+    function requestHostTimeout(callback, ms) {
+      taskTimeoutID = localSetTimeout(function() {
+        callback(exports.unstable_now());
+      }, ms);
+    }
+    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
+    exports.unstable_now = undefined;
+    if (typeof performance === "object" && typeof performance.now === "function") {
+      var localPerformance = performance;
+      exports.unstable_now = function() {
+        return localPerformance.now();
+      };
+    } else {
+      var localDate = Date, initialTime = localDate.now();
+      exports.unstable_now = function() {
+        return localDate.now() - initialTime;
+      };
+    }
+    var taskQueue = [], timerQueue = [], taskIdCounter = 1, currentTask = null, currentPriorityLevel = 3, isPerformingWork = false, isHostCallbackScheduled = false, isHostTimeoutScheduled = false, needsPaint = false, localSetTimeout = typeof setTimeout === "function" ? setTimeout : null, localClearTimeout = typeof clearTimeout === "function" ? clearTimeout : null, localSetImmediate = typeof setImmediate !== "undefined" ? setImmediate : null, isMessageLoopRunning = false, taskTimeoutID = -1, frameInterval = 5, startTime = -1;
+    if (typeof localSetImmediate === "function")
+      var schedulePerformWorkUntilDeadline = function() {
+        localSetImmediate(performWorkUntilDeadline);
+      };
+    else if (typeof MessageChannel !== "undefined") {
+      var channel = new MessageChannel, port = channel.port2;
+      channel.port1.onmessage = performWorkUntilDeadline;
+      schedulePerformWorkUntilDeadline = function() {
+        port.postMessage(null);
+      };
+    } else
+      schedulePerformWorkUntilDeadline = function() {
+        localSetTimeout(performWorkUntilDeadline, 0);
+      };
+    exports.unstable_IdlePriority = 5;
+    exports.unstable_ImmediatePriority = 1;
+    exports.unstable_LowPriority = 4;
+    exports.unstable_NormalPriority = 3;
+    exports.unstable_Profiling = null;
+    exports.unstable_UserBlockingPriority = 2;
+    exports.unstable_cancelCallback = function(task) {
+      task.callback = null;
+    };
+    exports.unstable_forceFrameRate = function(fps) {
+      0 > fps || 125 < fps ? console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported") : frameInterval = 0 < fps ? Math.floor(1000 / fps) : 5;
+    };
+    exports.unstable_getCurrentPriorityLevel = function() {
+      return currentPriorityLevel;
+    };
+    exports.unstable_next = function(eventHandler) {
+      switch (currentPriorityLevel) {
+        case 1:
+        case 2:
+        case 3:
+          var priorityLevel = 3;
+          break;
+        default:
+          priorityLevel = currentPriorityLevel;
+      }
+      var previousPriorityLevel = currentPriorityLevel;
+      currentPriorityLevel = priorityLevel;
+      try {
+        return eventHandler();
+      } finally {
+        currentPriorityLevel = previousPriorityLevel;
+      }
+    };
+    exports.unstable_requestPaint = function() {
+      needsPaint = true;
+    };
+    exports.unstable_runWithPriority = function(priorityLevel, eventHandler) {
+      switch (priorityLevel) {
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+          break;
+        default:
+          priorityLevel = 3;
+      }
+      var previousPriorityLevel = currentPriorityLevel;
+      currentPriorityLevel = priorityLevel;
+      try {
+        return eventHandler();
+      } finally {
+        currentPriorityLevel = previousPriorityLevel;
+      }
+    };
+    exports.unstable_scheduleCallback = function(priorityLevel, callback, options) {
+      var currentTime = exports.unstable_now();
+      typeof options === "object" && options !== null ? (options = options.delay, options = typeof options === "number" && 0 < options ? currentTime + options : currentTime) : options = currentTime;
+      switch (priorityLevel) {
+        case 1:
+          var timeout = -1;
+          break;
+        case 2:
+          timeout = 250;
+          break;
+        case 5:
+          timeout = 1073741823;
+          break;
+        case 4:
+          timeout = 1e4;
+          break;
+        default:
+          timeout = 5000;
+      }
+      timeout = options + timeout;
+      priorityLevel = {
+        id: taskIdCounter++,
+        callback,
+        priorityLevel,
+        startTime: options,
+        expirationTime: timeout,
+        sortIndex: -1
+      };
+      options > currentTime ? (priorityLevel.sortIndex = options, push(timerQueue, priorityLevel), peek(taskQueue) === null && priorityLevel === peek(timerQueue) && (isHostTimeoutScheduled ? (localClearTimeout(taskTimeoutID), taskTimeoutID = -1) : isHostTimeoutScheduled = true, requestHostTimeout(handleTimeout, options - currentTime))) : (priorityLevel.sortIndex = timeout, push(taskQueue, priorityLevel), isHostCallbackScheduled || isPerformingWork || (isHostCallbackScheduled = true, isMessageLoopRunning || (isMessageLoopRunning = true, schedulePerformWorkUntilDeadline())));
+      return priorityLevel;
+    };
+    exports.unstable_shouldYield = shouldYieldToHost;
+    exports.unstable_wrapCallback = function(callback) {
+      var parentPriorityLevel = currentPriorityLevel;
+      return function() {
+        var previousPriorityLevel = currentPriorityLevel;
+        currentPriorityLevel = parentPriorityLevel;
+        try {
+          return callback.apply(this, arguments);
+        } finally {
+          currentPriorityLevel = previousPriorityLevel;
+        }
+      };
+    };
+    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
+  })();
+});
+
+// node_modules/scheduler/index.js
+var require_scheduler = __commonJS((exports, module) => {
+  var scheduler_development = __toESM(require_scheduler_development());
+  if (false) {} else {
+    module.exports = scheduler_development;
+  }
+});
+
 // node_modules/react/cjs/react.development.js
 var require_react_development = __commonJS((exports, module) => {
   (function() {
@@ -861,272 +1124,9 @@ var require_react = __commonJS((exports, module) => {
   }
 });
 
-// node_modules/scheduler/cjs/scheduler.development.js
-var require_scheduler_development = __commonJS((exports) => {
-  (function() {
-    function performWorkUntilDeadline() {
-      needsPaint = false;
-      if (isMessageLoopRunning) {
-        var currentTime = exports.unstable_now();
-        startTime = currentTime;
-        var hasMoreWork = true;
-        try {
-          a: {
-            isHostCallbackScheduled = false;
-            isHostTimeoutScheduled && (isHostTimeoutScheduled = false, localClearTimeout(taskTimeoutID), taskTimeoutID = -1);
-            isPerformingWork = true;
-            var previousPriorityLevel = currentPriorityLevel;
-            try {
-              b: {
-                advanceTimers(currentTime);
-                for (currentTask = peek(taskQueue);currentTask !== null && !(currentTask.expirationTime > currentTime && shouldYieldToHost()); ) {
-                  var callback = currentTask.callback;
-                  if (typeof callback === "function") {
-                    currentTask.callback = null;
-                    currentPriorityLevel = currentTask.priorityLevel;
-                    var continuationCallback = callback(currentTask.expirationTime <= currentTime);
-                    currentTime = exports.unstable_now();
-                    if (typeof continuationCallback === "function") {
-                      currentTask.callback = continuationCallback;
-                      advanceTimers(currentTime);
-                      hasMoreWork = true;
-                      break b;
-                    }
-                    currentTask === peek(taskQueue) && pop(taskQueue);
-                    advanceTimers(currentTime);
-                  } else
-                    pop(taskQueue);
-                  currentTask = peek(taskQueue);
-                }
-                if (currentTask !== null)
-                  hasMoreWork = true;
-                else {
-                  var firstTimer = peek(timerQueue);
-                  firstTimer !== null && requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
-                  hasMoreWork = false;
-                }
-              }
-              break a;
-            } finally {
-              currentTask = null, currentPriorityLevel = previousPriorityLevel, isPerformingWork = false;
-            }
-            hasMoreWork = undefined;
-          }
-        } finally {
-          hasMoreWork ? schedulePerformWorkUntilDeadline() : isMessageLoopRunning = false;
-        }
-      }
-    }
-    function push(heap, node) {
-      var index2 = heap.length;
-      heap.push(node);
-      a:
-        for (;0 < index2; ) {
-          var parentIndex = index2 - 1 >>> 1, parent = heap[parentIndex];
-          if (0 < compare(parent, node))
-            heap[parentIndex] = node, heap[index2] = parent, index2 = parentIndex;
-          else
-            break a;
-        }
-    }
-    function peek(heap) {
-      return heap.length === 0 ? null : heap[0];
-    }
-    function pop(heap) {
-      if (heap.length === 0)
-        return null;
-      var first = heap[0], last = heap.pop();
-      if (last !== first) {
-        heap[0] = last;
-        a:
-          for (var index2 = 0, length = heap.length, halfLength = length >>> 1;index2 < halfLength; ) {
-            var leftIndex = 2 * (index2 + 1) - 1, left = heap[leftIndex], rightIndex = leftIndex + 1, right = heap[rightIndex];
-            if (0 > compare(left, last))
-              rightIndex < length && 0 > compare(right, left) ? (heap[index2] = right, heap[rightIndex] = last, index2 = rightIndex) : (heap[index2] = left, heap[leftIndex] = last, index2 = leftIndex);
-            else if (rightIndex < length && 0 > compare(right, last))
-              heap[index2] = right, heap[rightIndex] = last, index2 = rightIndex;
-            else
-              break a;
-          }
-      }
-      return first;
-    }
-    function compare(a, b) {
-      var diff = a.sortIndex - b.sortIndex;
-      return diff !== 0 ? diff : a.id - b.id;
-    }
-    function advanceTimers(currentTime) {
-      for (var timer = peek(timerQueue);timer !== null; ) {
-        if (timer.callback === null)
-          pop(timerQueue);
-        else if (timer.startTime <= currentTime)
-          pop(timerQueue), timer.sortIndex = timer.expirationTime, push(taskQueue, timer);
-        else
-          break;
-        timer = peek(timerQueue);
-      }
-    }
-    function handleTimeout(currentTime) {
-      isHostTimeoutScheduled = false;
-      advanceTimers(currentTime);
-      if (!isHostCallbackScheduled)
-        if (peek(taskQueue) !== null)
-          isHostCallbackScheduled = true, isMessageLoopRunning || (isMessageLoopRunning = true, schedulePerformWorkUntilDeadline());
-        else {
-          var firstTimer = peek(timerQueue);
-          firstTimer !== null && requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
-        }
-    }
-    function shouldYieldToHost() {
-      return needsPaint ? true : exports.unstable_now() - startTime < frameInterval ? false : true;
-    }
-    function requestHostTimeout(callback, ms) {
-      taskTimeoutID = localSetTimeout(function() {
-        callback(exports.unstable_now());
-      }, ms);
-    }
-    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStart(Error());
-    exports.unstable_now = undefined;
-    if (typeof performance === "object" && typeof performance.now === "function") {
-      var localPerformance = performance;
-      exports.unstable_now = function() {
-        return localPerformance.now();
-      };
-    } else {
-      var localDate = Date, initialTime = localDate.now();
-      exports.unstable_now = function() {
-        return localDate.now() - initialTime;
-      };
-    }
-    var taskQueue = [], timerQueue = [], taskIdCounter = 1, currentTask = null, currentPriorityLevel = 3, isPerformingWork = false, isHostCallbackScheduled = false, isHostTimeoutScheduled = false, needsPaint = false, localSetTimeout = typeof setTimeout === "function" ? setTimeout : null, localClearTimeout = typeof clearTimeout === "function" ? clearTimeout : null, localSetImmediate = typeof setImmediate !== "undefined" ? setImmediate : null, isMessageLoopRunning = false, taskTimeoutID = -1, frameInterval = 5, startTime = -1;
-    if (typeof localSetImmediate === "function")
-      var schedulePerformWorkUntilDeadline = function() {
-        localSetImmediate(performWorkUntilDeadline);
-      };
-    else if (typeof MessageChannel !== "undefined") {
-      var channel = new MessageChannel, port = channel.port2;
-      channel.port1.onmessage = performWorkUntilDeadline;
-      schedulePerformWorkUntilDeadline = function() {
-        port.postMessage(null);
-      };
-    } else
-      schedulePerformWorkUntilDeadline = function() {
-        localSetTimeout(performWorkUntilDeadline, 0);
-      };
-    exports.unstable_IdlePriority = 5;
-    exports.unstable_ImmediatePriority = 1;
-    exports.unstable_LowPriority = 4;
-    exports.unstable_NormalPriority = 3;
-    exports.unstable_Profiling = null;
-    exports.unstable_UserBlockingPriority = 2;
-    exports.unstable_cancelCallback = function(task) {
-      task.callback = null;
-    };
-    exports.unstable_forceFrameRate = function(fps) {
-      0 > fps || 125 < fps ? console.error("forceFrameRate takes a positive int between 0 and 125, forcing frame rates higher than 125 fps is not supported") : frameInterval = 0 < fps ? Math.floor(1000 / fps) : 5;
-    };
-    exports.unstable_getCurrentPriorityLevel = function() {
-      return currentPriorityLevel;
-    };
-    exports.unstable_next = function(eventHandler) {
-      switch (currentPriorityLevel) {
-        case 1:
-        case 2:
-        case 3:
-          var priorityLevel = 3;
-          break;
-        default:
-          priorityLevel = currentPriorityLevel;
-      }
-      var previousPriorityLevel = currentPriorityLevel;
-      currentPriorityLevel = priorityLevel;
-      try {
-        return eventHandler();
-      } finally {
-        currentPriorityLevel = previousPriorityLevel;
-      }
-    };
-    exports.unstable_requestPaint = function() {
-      needsPaint = true;
-    };
-    exports.unstable_runWithPriority = function(priorityLevel, eventHandler) {
-      switch (priorityLevel) {
-        case 1:
-        case 2:
-        case 3:
-        case 4:
-        case 5:
-          break;
-        default:
-          priorityLevel = 3;
-      }
-      var previousPriorityLevel = currentPriorityLevel;
-      currentPriorityLevel = priorityLevel;
-      try {
-        return eventHandler();
-      } finally {
-        currentPriorityLevel = previousPriorityLevel;
-      }
-    };
-    exports.unstable_scheduleCallback = function(priorityLevel, callback, options) {
-      var currentTime = exports.unstable_now();
-      typeof options === "object" && options !== null ? (options = options.delay, options = typeof options === "number" && 0 < options ? currentTime + options : currentTime) : options = currentTime;
-      switch (priorityLevel) {
-        case 1:
-          var timeout = -1;
-          break;
-        case 2:
-          timeout = 250;
-          break;
-        case 5:
-          timeout = 1073741823;
-          break;
-        case 4:
-          timeout = 1e4;
-          break;
-        default:
-          timeout = 5000;
-      }
-      timeout = options + timeout;
-      priorityLevel = {
-        id: taskIdCounter++,
-        callback,
-        priorityLevel,
-        startTime: options,
-        expirationTime: timeout,
-        sortIndex: -1
-      };
-      options > currentTime ? (priorityLevel.sortIndex = options, push(timerQueue, priorityLevel), peek(taskQueue) === null && priorityLevel === peek(timerQueue) && (isHostTimeoutScheduled ? (localClearTimeout(taskTimeoutID), taskTimeoutID = -1) : isHostTimeoutScheduled = true, requestHostTimeout(handleTimeout, options - currentTime))) : (priorityLevel.sortIndex = timeout, push(taskQueue, priorityLevel), isHostCallbackScheduled || isPerformingWork || (isHostCallbackScheduled = true, isMessageLoopRunning || (isMessageLoopRunning = true, schedulePerformWorkUntilDeadline())));
-      return priorityLevel;
-    };
-    exports.unstable_shouldYield = shouldYieldToHost;
-    exports.unstable_wrapCallback = function(callback) {
-      var parentPriorityLevel = currentPriorityLevel;
-      return function() {
-        var previousPriorityLevel = currentPriorityLevel;
-        currentPriorityLevel = parentPriorityLevel;
-        try {
-          return callback.apply(this, arguments);
-        } finally {
-          currentPriorityLevel = previousPriorityLevel;
-        }
-      };
-    };
-    typeof __REACT_DEVTOOLS_GLOBAL_HOOK__ !== "undefined" && typeof __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop === "function" && __REACT_DEVTOOLS_GLOBAL_HOOK__.registerInternalModuleStop(Error());
-  })();
-});
-
-// node_modules/scheduler/index.js
-var require_scheduler = __commonJS((exports, module) => {
-  var scheduler_development = __toESM(require_scheduler_development());
-  if (false) {} else {
-    module.exports = scheduler_development;
-  }
-});
-
 // node_modules/react-dom/cjs/react-dom.development.js
 var require_react_dom_development = __commonJS((exports) => {
-  var React2 = __toESM(require_react());
+  var React = __toESM(require_react());
   (function() {
     function noop() {}
     function testStringCoercion(value) {
@@ -1187,7 +1187,7 @@ See https://react.dev/link/invalid-hook-call for tips about how to debug and fix
       },
       p: 0,
       findDOMNode: null
-    }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React2.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
+    }, REACT_PORTAL_TYPE = Symbol.for("react.portal"), ReactSharedInternals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE;
     typeof Map === "function" && Map.prototype != null && typeof Map.prototype.forEach === "function" && typeof Set === "function" && Set.prototype != null && typeof Set.prototype.clear === "function" && typeof Set.prototype.forEach === "function" || console.error("React depends on Map and Set built-in types. Make sure that you load a polyfill in older browsers. https://reactjs.org/link/react-polyfills");
     exports.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE = Internals;
     exports.createPortal = function(children, container) {
@@ -1318,7 +1318,7 @@ var require_react_dom = __commonJS((exports, module) => {
 // node_modules/react-dom/cjs/react-dom-client.development.js
 var require_react_dom_client_development = __commonJS((exports) => {
   var Scheduler = __toESM(require_scheduler());
-  var React2 = __toESM(require_react());
+  var React = __toESM(require_react());
   var ReactDOM = __toESM(require_react_dom());
   (function() {
     function findHook(fiber, id) {
@@ -1326,11 +1326,11 @@ var require_react_dom_client_development = __commonJS((exports) => {
         fiber = fiber.next, id--;
       return fiber;
     }
-    function copyWithSetImpl(obj, path, index2, value) {
-      if (index2 >= path.length)
+    function copyWithSetImpl(obj, path, index, value) {
+      if (index >= path.length)
         return value;
-      var key = path[index2], updated = isArrayImpl(obj) ? obj.slice() : assign({}, obj);
-      updated[key] = copyWithSetImpl(obj[key], path, index2 + 1, value);
+      var key = path[index], updated = isArrayImpl(obj) ? obj.slice() : assign({}, obj);
+      updated[key] = copyWithSetImpl(obj[key], path, index + 1, value);
       return updated;
     }
     function copyWithRename(obj, oldPath, newPath) {
@@ -1345,16 +1345,16 @@ var require_react_dom_client_development = __commonJS((exports) => {
         return copyWithRenameImpl(obj, oldPath, newPath, 0);
       }
     }
-    function copyWithRenameImpl(obj, oldPath, newPath, index2) {
-      var oldKey = oldPath[index2], updated = isArrayImpl(obj) ? obj.slice() : assign({}, obj);
-      index2 + 1 === oldPath.length ? (updated[newPath[index2]] = updated[oldKey], isArrayImpl(updated) ? updated.splice(oldKey, 1) : delete updated[oldKey]) : updated[oldKey] = copyWithRenameImpl(obj[oldKey], oldPath, newPath, index2 + 1);
+    function copyWithRenameImpl(obj, oldPath, newPath, index) {
+      var oldKey = oldPath[index], updated = isArrayImpl(obj) ? obj.slice() : assign({}, obj);
+      index + 1 === oldPath.length ? (updated[newPath[index]] = updated[oldKey], isArrayImpl(updated) ? updated.splice(oldKey, 1) : delete updated[oldKey]) : updated[oldKey] = copyWithRenameImpl(obj[oldKey], oldPath, newPath, index + 1);
       return updated;
     }
-    function copyWithDeleteImpl(obj, path, index2) {
-      var key = path[index2], updated = isArrayImpl(obj) ? obj.slice() : assign({}, obj);
-      if (index2 + 1 === path.length)
+    function copyWithDeleteImpl(obj, path, index) {
+      var key = path[index], updated = isArrayImpl(obj) ? obj.slice() : assign({}, obj);
+      if (index + 1 === path.length)
         return isArrayImpl(updated) ? updated.splice(key, 1) : delete updated[key], updated;
-      updated[key] = copyWithDeleteImpl(obj[key], path, index2 + 1);
+      updated[key] = copyWithDeleteImpl(obj[key], path, index + 1);
       return updated;
     }
     function shouldSuspendImpl() {
@@ -2213,13 +2213,13 @@ Error generating stack: ` + x.message + `
       root2.shellSuspendCounter = 0;
       var { entanglements, expirationTimes, hiddenUpdates } = root2;
       for (remainingLanes = previouslyPendingLanes & ~remainingLanes;0 < remainingLanes; ) {
-        var index2 = 31 - clz32(remainingLanes), lane = 1 << index2;
-        entanglements[index2] = 0;
-        expirationTimes[index2] = -1;
-        var hiddenUpdatesForLane = hiddenUpdates[index2];
+        var index = 31 - clz32(remainingLanes), lane = 1 << index;
+        entanglements[index] = 0;
+        expirationTimes[index] = -1;
+        var hiddenUpdatesForLane = hiddenUpdates[index];
         if (hiddenUpdatesForLane !== null)
-          for (hiddenUpdates[index2] = null, index2 = 0;index2 < hiddenUpdatesForLane.length; index2++) {
-            var update = hiddenUpdatesForLane[index2];
+          for (hiddenUpdates[index] = null, index = 0;index < hiddenUpdatesForLane.length; index++) {
+            var update = hiddenUpdatesForLane[index];
             update !== null && (update.lane &= -536870913);
           }
         remainingLanes &= ~lane;
@@ -2237,8 +2237,8 @@ Error generating stack: ` + x.message + `
     function markRootEntangled(root2, entangledLanes) {
       var rootEntangledLanes = root2.entangledLanes |= entangledLanes;
       for (root2 = root2.entanglements;rootEntangledLanes; ) {
-        var index2 = 31 - clz32(rootEntangledLanes), lane = 1 << index2;
-        lane & entangledLanes | root2[index2] & entangledLanes && (root2[index2] |= entangledLanes);
+        var index = 31 - clz32(rootEntangledLanes), lane = 1 << index;
+        lane & entangledLanes | root2[index] & entangledLanes && (root2[index] |= entangledLanes);
         rootEntangledLanes &= ~lane;
       }
     }
@@ -2289,21 +2289,21 @@ Error generating stack: ` + x.message + `
     function addFiberToLanesMap(root2, fiber, lanes) {
       if (isDevToolsPresent)
         for (root2 = root2.pendingUpdatersLaneMap;0 < lanes; ) {
-          var index2 = 31 - clz32(lanes), lane = 1 << index2;
-          root2[index2].add(fiber);
+          var index = 31 - clz32(lanes), lane = 1 << index;
+          root2[index].add(fiber);
           lanes &= ~lane;
         }
     }
     function movePendingFibersToMemoized(root2, lanes) {
       if (isDevToolsPresent)
         for (var { pendingUpdatersLaneMap, memoizedUpdaters } = root2;0 < lanes; ) {
-          var index2 = 31 - clz32(lanes);
-          root2 = 1 << index2;
-          index2 = pendingUpdatersLaneMap[index2];
-          0 < index2.size && (index2.forEach(function(fiber) {
+          var index = 31 - clz32(lanes);
+          root2 = 1 << index;
+          index = pendingUpdatersLaneMap[index];
+          0 < index.size && (index.forEach(function(fiber) {
             var alternate = fiber.alternate;
             alternate !== null && memoizedUpdaters.has(alternate) || memoizedUpdaters.add(fiber);
-          }), index2.clear());
+          }), index.clear());
           lanes &= ~root2;
         }
     }
@@ -2606,7 +2606,7 @@ Error generating stack: ` + x.message + `
       type === "number" && getActiveElement(node.ownerDocument) === node || node.defaultValue === "" + value || (node.defaultValue = "" + value);
     }
     function validateOptionProps(element, props) {
-      props.value == null && (typeof props.children === "object" && props.children !== null ? React2.Children.forEach(props.children, function(child) {
+      props.value == null && (typeof props.children === "object" && props.children !== null ? React.Children.forEach(props.children, function(child) {
         child == null || typeof child === "string" || typeof child === "number" || typeof child === "bigint" || didWarnInvalidChild || (didWarnInvalidChild = true, console.error("Cannot infer the option value of complex children. Pass a `value` prop or use a plain string as children to <option>."));
       }) : props.dangerouslySetInnerHTML == null || didWarnInvalidInnerHTML || (didWarnInvalidInnerHTML = true, console.error("Pass a `value` prop if you set dangerouslyInnerHTML so React knows which value should be selected.")));
       props.selected == null || didWarnSelectedSetOnOption || (console.error("Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>."), didWarnSelectedSetOnOption = true);
@@ -4393,7 +4393,7 @@ Check the render method of \`` + fiberTag + "`.");
       treeForkProvider = workInProgress2;
       treeForkCount = totalChildren;
     }
-    function pushTreeId(workInProgress2, totalChildren, index2) {
+    function pushTreeId(workInProgress2, totalChildren, index) {
       warnIfNotHydrating();
       idStack[idStackIndex++] = treeContextId;
       idStack[idStackIndex++] = treeContextOverflow;
@@ -4403,17 +4403,17 @@ Check the render method of \`` + fiberTag + "`.");
       workInProgress2 = treeContextOverflow;
       var baseLength = 32 - clz32(baseIdWithLeadingBit) - 1;
       baseIdWithLeadingBit &= ~(1 << baseLength);
-      index2 += 1;
+      index += 1;
       var length = 32 - clz32(totalChildren) + baseLength;
       if (30 < length) {
         var numberOfOverflowBits = baseLength - baseLength % 5;
         length = (baseIdWithLeadingBit & (1 << numberOfOverflowBits) - 1).toString(32);
         baseIdWithLeadingBit >>= numberOfOverflowBits;
         baseLength -= numberOfOverflowBits;
-        treeContextId = 1 << 32 - clz32(totalChildren) + baseLength | index2 << baseLength | baseIdWithLeadingBit;
+        treeContextId = 1 << 32 - clz32(totalChildren) + baseLength | index << baseLength | baseIdWithLeadingBit;
         treeContextOverflow = length + workInProgress2;
       } else
-        treeContextId = 1 << length | index2 << baseLength | baseIdWithLeadingBit, treeContextOverflow = workInProgress2;
+        treeContextId = 1 << length | index << baseLength | baseIdWithLeadingBit, treeContextOverflow = workInProgress2;
     }
     function pushMaterializedTreeId(workInProgress2) {
       warnIfNotHydrating();
@@ -4984,11 +4984,11 @@ It can also happen if the client has a browser extension installed which messes 
       thenable = thenable.status;
       return thenable === "fulfilled" || thenable === "rejected";
     }
-    function trackUsedThenable(thenableState2, thenable, index2) {
+    function trackUsedThenable(thenableState2, thenable, index) {
       ReactSharedInternals.actQueue !== null && (ReactSharedInternals.didUsePromise = true);
       var trackedThenables = thenableState2.thenables;
-      index2 = trackedThenables[index2];
-      index2 === undefined ? trackedThenables.push(thenable) : index2 !== thenable && (thenableState2.didWarnAboutUncachedPromise || (thenableState2.didWarnAboutUncachedPromise = true, console.error("A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.")), thenable.then(noop$1, noop$1), thenable = index2);
+      index = trackedThenables[index];
+      index === undefined ? trackedThenables.push(thenable) : index !== thenable && (thenableState2.didWarnAboutUncachedPromise || (thenableState2.didWarnAboutUncachedPromise = true, console.error("A component was suspended by an uncached promise. Creating promises inside a Client Component or hook is not yet supported, except via a Suspense-compatible library or framework.")), thenable.then(noop$1, noop$1), thenable = index);
       if (thenable._debugInfo === undefined) {
         thenableState2 = performance.now();
         trackedThenables = thenable.displayName;
@@ -5093,10 +5093,10 @@ It can also happen if the client has a browser extension installed which messes 
       }
     }
     function unwrapThenable(thenable) {
-      var index2 = thenableIndexCounter$1;
+      var index = thenableIndexCounter$1;
       thenableIndexCounter$1 += 1;
       thenableState$1 === null && (thenableState$1 = createThenableState());
-      return trackUsedThenable(thenableState$1, thenable, index2);
+      return trackUsedThenable(thenableState$1, thenable, index);
     }
     function coerceRef(workInProgress2, element) {
       element = element.props.ref;
@@ -5518,10 +5518,10 @@ It can also happen if the client has a browser extension installed which messes 
         }
       };
     }
-    function validateSuspenseListNestedChild(childSlot, index2) {
+    function validateSuspenseListNestedChild(childSlot, index) {
       var isAnArray = isArrayImpl(childSlot);
       childSlot = !isAnArray && typeof getIteratorFn(childSlot) === "function";
-      return isAnArray || childSlot ? (isAnArray = isAnArray ? "array" : "iterable", console.error("A nested %s was passed to row #%s in <SuspenseList />. Wrap it in an additional SuspenseList to configure its revealOrder: <SuspenseList revealOrder=...> ... <SuspenseList revealOrder=...>{%s}</SuspenseList> ... </SuspenseList>", isAnArray, index2, isAnArray), false) : true;
+      return isAnArray || childSlot ? (isAnArray = isAnArray ? "array" : "iterable", console.error("A nested %s was passed to row #%s in <SuspenseList />. Wrap it in an additional SuspenseList to configure its revealOrder: <SuspenseList revealOrder=...> ... <SuspenseList revealOrder=...>{%s}</SuspenseList> ... </SuspenseList>", isAnArray, index, isAnArray), false) : true;
     }
     function initializeUpdateQueue(fiber) {
       fiber.updateQueue = {
@@ -6013,12 +6013,12 @@ Incoming: %s`, currentHookNameInDev, "[" + prevDeps.join(", ") + "]", "[" + next
       return { lastEffect: null, events: null, stores: null, memoCache: null };
     }
     function useThenable(thenable) {
-      var index2 = thenableIndexCounter;
+      var index = thenableIndexCounter;
       thenableIndexCounter += 1;
       thenableState === null && (thenableState = createThenableState());
-      thenable = trackUsedThenable(thenableState, thenable, index2);
-      index2 = currentlyRenderingFiber;
-      (workInProgressHook === null ? index2.memoizedState : workInProgressHook.next) === null && (index2 = index2.alternate, ReactSharedInternals.H = index2 !== null && index2.memoizedState !== null ? HooksDispatcherOnUpdateInDEV : HooksDispatcherOnMountInDEV);
+      thenable = trackUsedThenable(thenableState, thenable, index);
+      index = currentlyRenderingFiber;
+      (workInProgressHook === null ? index.memoizedState : workInProgressHook.next) === null && (index = index.alternate, ReactSharedInternals.H = index !== null && index.memoizedState !== null ? HooksDispatcherOnUpdateInDEV : HooksDispatcherOnMountInDEV);
       return thenable;
     }
     function use(usable) {
@@ -10173,8 +10173,8 @@ Learn more about data fetching with Hooks: https://react.dev/link/hooks-data-fet
       didAttemptEntireTree && (root2.warmLanes |= suspendedLanes);
       didAttemptEntireTree = root2.expirationTimes;
       for (var lanes = suspendedLanes;0 < lanes; ) {
-        var index2 = 31 - clz32(lanes), lane = 1 << index2;
-        didAttemptEntireTree[index2] = -1;
+        var index = 31 - clz32(lanes), lane = 1 << index;
+        didAttemptEntireTree[index] = -1;
         lanes &= ~lane;
       }
       spawnedLane !== 0 && markSpawnedDeferredLane(root2, spawnedLane, suspendedLanes);
@@ -11144,10 +11144,10 @@ This ensures that you're testing the behavior the user would see in the browser.
     }
     function scheduleTaskForRootDuringMicrotask(root2, currentTime) {
       for (var { suspendedLanes, pingedLanes, expirationTimes } = root2, lanes = root2.pendingLanes & -62914561;0 < lanes; ) {
-        var index2 = 31 - clz32(lanes), lane = 1 << index2, expirationTime = expirationTimes[index2];
+        var index = 31 - clz32(lanes), lane = 1 << index, expirationTime = expirationTimes[index];
         if (expirationTime === -1) {
           if ((lane & suspendedLanes) === 0 || (lane & pingedLanes) !== 0)
-            expirationTimes[index2] = computeExpirationTime(lane, currentTime);
+            expirationTimes[index] = computeExpirationTime(lane, currentTime);
         } else
           expirationTime <= currentTime && (root2.expiredLanes |= lane);
         lanes &= ~lane;
@@ -14156,7 +14156,7 @@ Check the render method of %s.`, getComponentNameFromFiber(current) || "Unknown"
     Symbol.for("react.tracing_marker");
     var REACT_MEMO_CACHE_SENTINEL = Symbol.for("react.memo_cache_sentinel");
     Symbol.for("react.view_transition");
-    var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React2.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ReactDOMSharedInternals = ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, NotPending = Object.freeze({
+    var MAYBE_ITERATOR_SYMBOL = Symbol.iterator, REACT_CLIENT_REFERENCE = Symbol.for("react.client.reference"), isArrayImpl = Array.isArray, ReactSharedInternals = React.__CLIENT_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, ReactDOMSharedInternals = ReactDOM.__DOM_INTERNALS_DO_NOT_USE_OR_WARN_USERS_THEY_CANNOT_UPGRADE, NotPending = Object.freeze({
       pending: false,
       data: null,
       method: null,
@@ -16791,7 +16791,7 @@ Check the top-level render call using <` + componentName2 + ">.");
       }
     };
     (function() {
-      var isomorphicReactPackageVersion = React2.version;
+      var isomorphicReactPackageVersion = React.version;
       if (isomorphicReactPackageVersion !== "19.2.4")
         throw Error(`Incompatible React versions: The "react" and "react-dom" packages must have the exact same version. Instead got:
   - react:      ` + (isomorphicReactPackageVersion + `
@@ -17113,6 +17113,9 @@ var require_jsx_dev_runtime = __commonJS((exports, module) => {
     module.exports = react_jsx_dev_runtime_development;
   }
 });
+
+// web/app-entry.tsx
+var import_client2 = __toESM(require_client(), 1);
 // node_modules/lucide-react/dist/esm/createLucideIcon.js
 var import_react3 = __toESM(require_react(), 1);
 
@@ -17223,26 +17226,20 @@ var __iconNode4 = [
   ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
 ];
 var Download = createLucideIcon("download", __iconNode4);
-// node_modules/lucide-react/dist/esm/icons/link.js
-var __iconNode5 = [
-  ["path", { d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71", key: "1cjeqo" }],
-  ["path", { d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71", key: "19qd67" }]
-];
-var Link = createLucideIcon("link", __iconNode5);
 // node_modules/lucide-react/dist/esm/icons/refresh-ccw.js
-var __iconNode6 = [
+var __iconNode5 = [
   ["path", { d: "M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "14sxne" }],
   ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
   ["path", { d: "M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16", key: "1hlbsb" }],
   ["path", { d: "M16 16h5v5", key: "ccwih5" }]
 ];
-var RefreshCcw = createLucideIcon("refresh-ccw", __iconNode6);
+var RefreshCcw = createLucideIcon("refresh-ccw", __iconNode5);
 // node_modules/lucide-react/dist/esm/icons/smartphone.js
-var __iconNode7 = [
+var __iconNode6 = [
   ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
   ["path", { d: "M12 18h.01", key: "mhygvu" }]
 ];
-var Smartphone = createLucideIcon("smartphone", __iconNode7);
+var Smartphone = createLucideIcon("smartphone", __iconNode6);
 // node_modules/qrcode.react/lib/esm/index.js
 var import_react4 = __toESM(require_react(), 1);
 var __defProp2 = Object.defineProperty;
@@ -18174,12 +18171,53 @@ var QRCodeSVG = import_react4.default.forwardRef(function QRCodeSVG2(props, forw
 });
 QRCodeSVG.displayName = "QRCodeSVG";
 
-// web/app-entry.tsx
+// web/overlay/OverlayApp.tsx
+var import_react8 = __toESM(require_react(), 1);
+
+// web/overlay/hooks/useViewerNotice.ts
 var import_react5 = __toESM(require_react(), 1);
-var import_client = __toESM(require_client(), 1);
-var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
+function useViewerNotice() {
+  const [viewerNotice, setViewerNotice] = import_react5.useState("");
+  import_react5.useEffect(() => {
+    let timeout = null;
+    const onViewerNotice = (event) => {
+      const customEvent = event;
+      const message = customEvent.detail?.message ?? "";
+      setViewerNotice(message);
+      if (timeout) {
+        window.clearTimeout(timeout);
+      }
+      timeout = window.setTimeout(() => {
+        setViewerNotice("");
+      }, 1800);
+    };
+    window.addEventListener("viewer-notice", onViewerNotice);
+    return () => {
+      window.removeEventListener("viewer-notice", onViewerNotice);
+      if (timeout) {
+        window.clearTimeout(timeout);
+      }
+    };
+  }, []);
+  return viewerNotice;
+}
+
+// web/overlay/hooks/useViewerSocket.ts
+var import_react6 = __toESM(require_react(), 1);
+
+// web/overlay/url.ts
 function createRoomId() {
   return crypto.randomUUID().replace(/-/g, "").slice(0, 10).toUpperCase();
+}
+function resolveViewerVersionParam(defaultVersion = "v1") {
+  const url = new URL(window.location.href);
+  const version = url.searchParams.get("version")?.toLowerCase();
+  return version === "v1" || version === "v2" || version === "v3" ? version : defaultVersion;
+}
+function setViewerVersionParam(version) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("version", version);
+  window.history.replaceState({}, "", url.toString());
 }
 function buildSensorSocketUrl(roomId, host) {
   const url = new URL(window.location.href);
@@ -18198,55 +18236,35 @@ function buildSocketUrl(roomId) {
   url.hash = "";
   return url.toString();
 }
-function OverlayApp() {
-  const [setupOpen, setSetupOpen] = import_react5.useState(true);
-  const [debugOpen, setDebugOpen] = import_react5.useState(false);
-  const [copyLabel, setCopyLabel] = import_react5.useState("Copy link");
-  const [pairingHost, setPairingHost] = import_react5.useState(() => window.location.host);
-  const [physics, setPhysics] = import_react5.useState({
-    gravity: 29.43,
-    rotationResponse: 8.5,
-    linearDamping: 0.99,
-    edgeBounce: 0.6,
-    invertX: false,
-    invertZ: false,
-    invertGravity: false,
-    swapAxes: false
-  });
-  const updatePhysics = (patch) => {
-    setPhysics((current) => {
-      const next = { ...current, ...patch };
-      window.dispatchEvent(new CustomEvent("physics-config", { detail: patch }));
-      return next;
-    });
+
+// web/overlay/hooks/useViewerSocket.ts
+function createInitialPanelState() {
+  const url = new URL(window.location.href);
+  let roomId = url.searchParams.get("room");
+  if (!roomId) {
+    roomId = createRoomId();
+    url.searchParams.set("room", roomId);
+    url.searchParams.set("role", "viewer");
+    window.history.replaceState({}, "", url.toString());
+  }
+  return {
+    status: "Connecting",
+    meta: "Waiting for transmitter...",
+    readout: "Waiting for tilt data...",
+    roomId
   };
-  const resetBall = () => {
-    window.dispatchEvent(new CustomEvent("physics-reset"));
-  };
-  const [panelState, setPanelState] = import_react5.useState(() => {
-    const url = new URL(window.location.href);
-    let roomId = url.searchParams.get("room");
-    if (!roomId) {
-      roomId = createRoomId();
-      url.searchParams.set("room", roomId);
-      url.searchParams.set("role", "viewer");
-      window.history.replaceState({}, "", url.toString());
-    }
-    return {
-      status: "Connecting",
-      meta: "Waiting for transmitter...",
-      readout: "Waiting for tilt data...",
-      roomId
-    };
-  });
-  const sensorSocketUrl = import_react5.useMemo(() => buildSensorSocketUrl(panelState.roomId, pairingHost || window.location.host), [pairingHost, panelState.roomId]);
-  import_react5.useEffect(() => {
+}
+function useViewerSocket(pairingHost) {
+  const [panelState, setPanelState] = import_react6.useState(createInitialPanelState);
+  const sensorSocketUrl = import_react6.useMemo(() => buildSensorSocketUrl(panelState.roomId, pairingHost || window.location.host), [pairingHost, panelState.roomId]);
+  import_react6.useEffect(() => {
     let socket = null;
     let reconnectTimeout = null;
     let isUnmounted = false;
     const connect = () => {
-      if (isUnmounted)
+      if (isUnmounted) {
         return;
+      }
       socket = new WebSocket(buildSocketUrl(panelState.roomId));
       socket.addEventListener("open", () => {
         if (isUnmounted) {
@@ -18262,8 +18280,9 @@ function OverlayApp() {
         } catch {
           return;
         }
-        if (payload?.type !== "state")
+        if (payload?.type !== "state") {
           return;
+        }
         window.dispatchEvent(new CustomEvent("tilt-state", {
           detail: { x: payload.x, z: payload.z }
         }));
@@ -18275,8 +18294,9 @@ function OverlayApp() {
         }));
       });
       socket.addEventListener("close", () => {
-        if (isUnmounted)
+        if (isUnmounted) {
           return;
+        }
         setPanelState((current) => ({ ...current, status: "Disconnected" }));
         reconnectTimeout = window.setTimeout(connect, 2000);
       });
@@ -18284,21 +18304,180 @@ function OverlayApp() {
     connect();
     return () => {
       isUnmounted = true;
-      if (reconnectTimeout)
+      if (reconnectTimeout) {
         window.clearTimeout(reconnectTimeout);
+      }
       socket?.close();
     };
   }, [panelState.roomId]);
+  return {
+    panelState,
+    sensorSocketUrl
+  };
+}
+
+// web/overlay/hooks/useVersionedPhysics.ts
+var import_react7 = __toESM(require_react(), 1);
+
+// web/overlay/constants.ts
+var DEFAULT_PHYSICS_BY_VERSION = {
+  v1: {
+    gravity: 29.43,
+    rotationResponse: 8.5,
+    linearDamping: 0.99,
+    edgeBounce: 0.6,
+    invertX: false,
+    invertZ: false,
+    invertGravity: false,
+    swapAxes: false
+  },
+  v2: {
+    gravity: 29.43,
+    rotationResponse: 8.5,
+    linearDamping: 0.99,
+    edgeBounce: 0.2,
+    invertX: false,
+    invertZ: false,
+    invertGravity: false,
+    swapAxes: false
+  },
+  v3: {
+    gravity: 29.43,
+    rotationResponse: 8.5,
+    linearDamping: 0.99,
+    edgeBounce: 0.2,
+    invertX: false,
+    invertZ: false,
+    invertGravity: false,
+    swapAxes: false
+  }
+};
+var VIEWER_OPTIONS = [
+  {
+    id: "v1",
+    name: "V1",
+    summary: "Rimmed board with bounded rolling physics."
+  },
+  {
+    id: "v2",
+    name: "V2",
+    summary: "Rimless board where the ball can fall and respawn."
+  },
+  {
+    id: "v3",
+    name: "V3",
+    summary: "New theme variant (same physics as V2 by default)."
+  }
+];
+
+// web/overlay/hooks/useVersionedPhysics.ts
+function useVersionedPhysics(activeVersion) {
+  const [physicsByVersion, setPhysicsByVersion] = import_react7.useState(() => ({ ...DEFAULT_PHYSICS_BY_VERSION }));
+  const physics = physicsByVersion[activeVersion];
+  const updatePhysics = (patch) => {
+    setPhysicsByVersion((current) => {
+      const nextVersionConfig = { ...current[activeVersion], ...patch };
+      const next = { ...current, [activeVersion]: nextVersionConfig };
+      window.dispatchEvent(new CustomEvent("physics-config", { detail: patch }));
+      return next;
+    });
+  };
+  const previousVersionRef = import_react7.useRef(null);
+  import_react7.useEffect(() => {
+    if (previousVersionRef.current === activeVersion) {
+      return;
+    }
+    previousVersionRef.current = activeVersion;
+    window.dispatchEvent(new CustomEvent("physics-config", {
+      detail: physicsByVersion[activeVersion]
+    }));
+    window.dispatchEvent(new CustomEvent("physics-reset"));
+  }, [activeVersion, physicsByVersion]);
+  return {
+    physics,
+    updatePhysics
+  };
+}
+
+// web/overlay/OverlayApp.tsx
+var import_client = __toESM(require_client(), 1);
+var jsx_dev_runtime = __toESM(require_jsx_dev_runtime(), 1);
+function OverlayApp() {
+  const [activeVersion, setActiveVersion] = import_react8.useState(() => resolveViewerVersionParam("v1"));
+  const viewerNotice = useViewerNotice();
+  const [setupOpen, setSetupOpen] = import_react8.useState(true);
+  const [copyLabel, setCopyLabel] = import_react8.useState("Copy link");
+  const [pairingHost, setPairingHost] = import_react8.useState(() => window.location.host);
+  const [isSceneLoading, setIsSceneLoading] = import_react8.useState(false);
+  const { panelState, sensorSocketUrl } = useViewerSocket(pairingHost);
+  const { physics, updatePhysics } = useVersionedPhysics(activeVersion);
+  const viewerVersions = import_react8.useMemo(() => VIEWER_OPTIONS.map((option) => option.id), []);
+  const activeIndex = Math.max(0, viewerVersions.indexOf(activeVersion));
+  const canGoPrev = activeIndex > 0;
+  const canGoNext = activeIndex < viewerVersions.length - 1;
+  const resetBall = () => {
+    window.dispatchEvent(new CustomEvent("physics-reset"));
+  };
+  import_react8.useEffect(() => {
+    setViewerVersionParam(activeVersion);
+    setIsSceneLoading(true);
+    window.dispatchEvent(new CustomEvent("viewer-version-change", {
+      detail: { version: activeVersion }
+    }));
+  }, [activeVersion]);
+  import_react8.useEffect(() => {
+    if (!isSceneLoading) {
+      return;
+    }
+    const expectedReady = `${activeVersion.toUpperCase()} ready.`;
+    const onViewerNotice = (event) => {
+      const customEvent = event;
+      if (customEvent.detail?.message === expectedReady) {
+        setIsSceneLoading(false);
+      }
+    };
+    const timeout = window.setTimeout(() => setIsSceneLoading(false), 4000);
+    window.addEventListener("viewer-notice", onViewerNotice);
+    return () => {
+      window.removeEventListener("viewer-notice", onViewerNotice);
+      window.clearTimeout(timeout);
+    };
+  }, [activeVersion, isSceneLoading]);
   return /* @__PURE__ */ jsx_dev_runtime.jsxDEV("main", {
     className: "overlay-root",
     children: [
+      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+        className: `scene-loading ${isSceneLoading ? "show" : ""}`,
+        "aria-hidden": !isSceneLoading,
+        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+          className: "scene-loading-card",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+              className: "scene-loading-spinner"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+              className: "scene-loading-text",
+              children: [
+                "Loading ",
+                activeVersion.toUpperCase(),
+                "..."
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+        className: "viewer-notice",
+        hidden: !viewerNotice,
+        children: viewerNotice
+      }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("section", {
         className: "panel panel-left",
         children: [
           /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
             className: "panel-toggle",
             type: "button",
-            onClick: () => setSetupOpen((v) => !v),
+            onClick: () => setSetupOpen((value) => !value),
             children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Smartphone, {
               size: 16,
               strokeWidth: 2.25
@@ -18370,221 +18549,272 @@ function OverlayApp() {
       }, undefined, true, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("section", {
         className: "panel panel-right",
-        children: [
-          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-            className: "panel-toggle",
-            type: "button",
-            onClick: () => setDebugOpen((v) => !v),
-            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Link, {
-              size: 16,
-              strokeWidth: 2.25
-            }, undefined, false, undefined, this)
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-            className: "panel-card",
-            hidden: !debugOpen,
-            children: [
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-head",
+        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+          className: "panel-card",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+              className: "panel-head",
+              children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                className: "panel-title",
+                children: "2. Connect & Control"
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+              className: "setup-section",
+              style: { paddingBottom: 0 },
+              children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                className: "setup-step",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-title",
-                    children: "2. Connect & Control"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                    className: "panel-close",
-                    onClick: () => setDebugOpen(false),
-                    children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(ChevronRight, {
-                      size: 16
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
+                    className: "setup-step-desc",
+                    children: [
+                      "Scan this QR in the app to pair with",
+                      " ",
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("strong", {
+                        children: [
+                          "Room ",
+                          panelState.roomId
+                        ]
+                      }, undefined, true, undefined, this),
+                      "."
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "pairing-qr",
+                    children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
+                      value: sensorSocketUrl,
+                      size: 140,
+                      includeMargin: true
                     }, undefined, false, undefined, this)
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "setup-section",
-                style: { paddingBottom: 0 },
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                  className: "setup-step",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
-                      className: "setup-step-desc",
-                      children: [
-                        "Scan this QR in the app to pair with ",
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("strong", {
-                          children: [
-                            "Room ",
-                            panelState.roomId
-                          ]
-                        }, undefined, true, undefined, this),
-                        "."
-                      ]
-                    }, undefined, true, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                      className: "pairing-qr",
-                      children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
-                        value: sensorSocketUrl,
-                        size: 140,
-                        includeMargin: true
-                      }, undefined, false, undefined, this)
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                      className: "pairing-field",
-                      style: { marginTop: "12px" },
-                      children: [
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                          className: "panel-label",
-                          children: "WebSocket host"
-                        }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                          className: "pairing-input",
-                          type: "text",
-                          value: pairingHost,
-                          onChange: (e) => setPairingHost(e.target.value)
-                        }, undefined, false, undefined, this)
-                      ]
-                    }, undefined, true, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                      className: "pairing-copy",
-                      type: "button",
-                      onClick: async () => {
-                        await navigator.clipboard.writeText(sensorSocketUrl);
-                        setCopyLabel("Copied");
-                        window.setTimeout(() => setCopyLabel("Copy link"), 1200);
-                      },
-                      children: [
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Copy, {
-                          size: 14
-                        }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                          children: copyLabel
-                        }, undefined, false, undefined, this)
-                      ]
-                    }, undefined, true, undefined, this)
-                  ]
-                }, undefined, true, undefined, this)
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-divider"
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "panel-sub-section",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-row",
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
+                    className: "pairing-field",
+                    style: { marginTop: "12px" },
                     children: [
                       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
                         className: "panel-label",
-                        children: "Status"
+                        children: "WebSocket host"
                       }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: `panel-value ${panelState.status === "Connected" ? "text-green" : ""}`,
-                        children: panelState.status
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-row panel-stack",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        className: "panel-label",
-                        children: "Readout"
-                      }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("pre", {
-                        id: "readout",
-                        children: panelState.readout
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-divider"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-row panel-stack",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "panel-label-row",
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            className: "panel-label",
-                            children: "Gravity"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            className: "panel-value",
-                            children: physics.gravity.toFixed(1)
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this),
                       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                        type: "range",
-                        min: "0",
-                        max: "100",
-                        step: "0.1",
-                        value: physics.gravity,
-                        onChange: (e) => updatePhysics({ gravity: parseFloat(e.target.value) })
+                        className: "pairing-input",
+                        type: "text",
+                        value: pairingHost,
+                        onChange: (event) => setPairingHost(event.target.value)
                       }, undefined, false, undefined, this)
                     ]
                   }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-row panel-stack",
-                    children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                        className: "panel-label-row",
-                        children: [
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            className: "panel-label",
-                            children: "Response"
-                          }, undefined, false, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                            className: "panel-value",
-                            children: physics.rotationResponse.toFixed(1)
-                          }, undefined, false, undefined, this)
-                        ]
-                      }, undefined, true, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                        type: "range",
-                        min: "1",
-                        max: "30",
-                        step: "0.5",
-                        value: physics.rotationResponse,
-                        onChange: (e) => updatePhysics({ rotationResponse: parseFloat(e.target.value) })
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                    className: "panel-row",
-                    children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                      className: "panel-toggle-row",
-                      children: [
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                          className: "panel-label",
-                          children: "Invert Tilt"
-                        }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                          type: "checkbox",
-                          checked: physics.invertX,
-                          onChange: (e) => updatePhysics({ invertX: e.target.checked, invertZ: e.target.checked })
-                        }, undefined, false, undefined, this)
-                      ]
-                    }, undefined, true, undefined, this)
-                  }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                    className: "panel-action-btn",
+                    className: "pairing-copy",
                     type: "button",
-                    onClick: resetBall,
-                    style: { marginTop: "8px" },
+                    onClick: async () => {
+                      await navigator.clipboard.writeText(sensorSocketUrl);
+                      setCopyLabel("Copied");
+                      window.setTimeout(() => setCopyLabel("Copy link"), 1200);
+                    },
                     children: [
-                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV(RefreshCcw, {
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Copy, {
                         size: 14
                       }, undefined, false, undefined, this),
                       /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                        children: "Reset sphere"
+                        children: copyLabel
                       }, undefined, false, undefined, this)
                     ]
                   }, undefined, true, undefined, this)
                 ]
               }, undefined, true, undefined, this)
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+              className: "panel-divider"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+              className: "panel-sub-section",
+              children: [
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-row",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                      className: "panel-label",
+                      children: "Version"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                      className: "panel-value",
+                      children: activeVersion.toUpperCase()
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-row",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                      className: "panel-label",
+                      children: "Status"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                      className: `panel-value ${panelState.status === "Connected" ? "text-green" : ""}`,
+                      children: panelState.status
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-row panel-stack",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                      className: "panel-label",
+                      children: "Readout"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("pre", {
+                      id: "readout",
+                      children: panelState.readout
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-divider"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-row panel-stack",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                      className: "panel-label-row",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          className: "panel-label",
+                          children: "Gravity"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          className: "panel-value",
+                          children: physics.gravity.toFixed(1)
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                      type: "range",
+                      min: "0",
+                      max: "100",
+                      step: "0.1",
+                      value: physics.gravity,
+                      onChange: (event) => updatePhysics({ gravity: parseFloat(event.target.value) })
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-row panel-stack",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                      className: "panel-label-row",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          className: "panel-label",
+                          children: "Response"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                          className: "panel-value",
+                          children: physics.rotationResponse.toFixed(1)
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                      type: "range",
+                      min: "1",
+                      max: "30",
+                      step: "0.5",
+                      value: physics.rotationResponse,
+                      onChange: (event) => updatePhysics({
+                        rotationResponse: parseFloat(event.target.value)
+                      })
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                  className: "panel-row",
+                  children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
+                    className: "panel-toggle-row",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                        className: "panel-label",
+                        children: "Invert Tilt"
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                        type: "checkbox",
+                        checked: physics.invertX,
+                        onChange: (event) => updatePhysics({
+                          invertX: event.target.checked,
+                          invertZ: event.target.checked
+                        })
+                      }, undefined, false, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+                  className: "panel-action-btn",
+                  type: "button",
+                  onClick: resetBall,
+                  style: { marginTop: "8px" },
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV(RefreshCcw, {
+                      size: 14
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                      children: "Reset sphere"
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("section", {
+        className: "version-dock",
+        "aria-label": "Version navigation",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+            className: "version-dock-btn",
+            type: "button",
+            disabled: !canGoPrev || isSceneLoading,
+            "aria-label": "Previous version",
+            onClick: () => {
+              if (!canGoPrev)
+                return;
+              setActiveVersion(viewerVersions[activeIndex - 1]);
+            },
+            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(ChevronLeft, {
+              size: 16
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+            className: "version-dock-card",
+            role: "group",
+            "aria-label": "Active version",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                className: "version-dock-kicker",
+                children: "Version"
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                className: "version-dock-title",
+                children: VIEWER_OPTIONS[activeIndex]?.name ?? activeVersion.toUpperCase()
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                className: "version-dock-subtitle",
+                children: VIEWER_OPTIONS[activeIndex]?.summary ?? ""
+              }, undefined, false, undefined, this)
             ]
-          }, undefined, true, undefined, this)
+          }, undefined, true, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+            className: "version-dock-btn",
+            type: "button",
+            disabled: !canGoNext || isSceneLoading,
+            "aria-label": "Next version",
+            onClick: () => {
+              if (!canGoNext)
+                return;
+              setActiveVersion(viewerVersions[activeIndex + 1]);
+            },
+            children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(ChevronRight, {
+              size: 16
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this)
     ]
@@ -18593,4 +18823,11 @@ function OverlayApp() {
 var root = document.getElementById("overlay-root");
 if (root) {
   import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime.jsxDEV(OverlayApp, {}, undefined, false, undefined, this));
+}
+
+// web/app-entry.tsx
+var jsx_dev_runtime2 = __toESM(require_jsx_dev_runtime(), 1);
+var root2 = document.getElementById("overlay-root");
+if (root2) {
+  import_client2.createRoot(root2).render(/* @__PURE__ */ jsx_dev_runtime2.jsxDEV(OverlayApp, {}, undefined, false, undefined, this));
 }

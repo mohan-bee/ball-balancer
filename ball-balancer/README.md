@@ -21,6 +21,7 @@ bun dev
 Open `http://localhost:3000`.
 
 ## How it Works
+
 - The server (`server.ts`) serves the static frontend from the `web/` directory.
 - The same server handles WebSocket connections for real-time sensor data.
 - The pairing logic uses a unique room ID passed via QR code.
