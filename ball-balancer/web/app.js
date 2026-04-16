@@ -17238,14 +17238,27 @@ var __iconNode5 = [
   ["path", { d: "M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2", key: "zix9uf" }]
 ];
 var Copy = createLucideIcon("copy", __iconNode5);
-// node_modules/lucide-react/dist/esm/icons/refresh-ccw.js
+// node_modules/lucide-react/dist/esm/icons/download.js
 var __iconNode6 = [
+  ["path", { d: "M12 15V3", key: "m9g1x1" }],
+  ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+  ["path", { d: "m7 10 5 5 5-5", key: "brsn70" }]
+];
+var Download = createLucideIcon("download", __iconNode6);
+// node_modules/lucide-react/dist/esm/icons/refresh-ccw.js
+var __iconNode7 = [
   ["path", { d: "M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "14sxne" }],
   ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
   ["path", { d: "M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16", key: "1hlbsb" }],
   ["path", { d: "M16 16h5v5", key: "ccwih5" }]
 ];
-var RefreshCcw = createLucideIcon("refresh-ccw", __iconNode6);
+var RefreshCcw = createLucideIcon("refresh-ccw", __iconNode7);
+// node_modules/lucide-react/dist/esm/icons/smartphone.js
+var __iconNode8 = [
+  ["rect", { width: "14", height: "20", x: "5", y: "2", rx: "2", ry: "2", key: "1yt0o3" }],
+  ["path", { d: "M12 18h.01", key: "mhygvu" }]
+];
+var Smartphone = createLucideIcon("smartphone", __iconNode8);
 // node_modules/qrcode.react/lib/esm/index.js
 var import_react4 = __toESM(require_react(), 1);
 var __defProp2 = Object.defineProperty;
@@ -18367,76 +18380,168 @@ function OverlayApp() {
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
-                className: "pairing-field",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    className: "panel-label",
-                    children: "WebSocket host"
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
-                    className: "pairing-input",
-                    type: "text",
-                    value: pairingHost,
-                    onChange: (event) => setPairingHost(event.target.value),
-                    spellCheck: false,
-                    autoCapitalize: "off",
-                    autoCorrect: "off"
-                  }, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "pairing-room",
-                children: [
-                  "Room ",
-                  panelState.roomId
-                ]
-              }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "pairing-qr",
-                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
-                  value: sensorSocketUrl,
-                  size: 168,
-                  bgColor: "#ffffff",
-                  fgColor: "#0f172a"
+                className: "panel-tabs",
+                children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+                  className: `panel-tab ${!debugOpen ? "active" : ""}`,
+                  onClick: () => {},
+                  type: "button",
+                  children: "Setup"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
-                className: "pairing-url",
-                children: sensorSocketUrl
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
-                className: "pairing-copy",
-                type: "button",
-                onClick: async () => {
-                  await navigator.clipboard.writeText(sensorSocketUrl);
-                  setCopyLabel("Copied");
-                  window.setTimeout(() => setCopyLabel("Copy link"), 1200);
-                },
+                className: "setup-section",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Copy, {
-                    size: 14,
-                    strokeWidth: 2.4
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "setup-step",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "setup-step-head",
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                            className: "setup-step-num",
+                            children: "1"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                            className: "setup-step-title",
+                            children: "Get Transmitter App"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Smartphone, {
+                            size: 14,
+                            className: "panel-label",
+                            style: { marginLeft: "auto", opacity: 0.5 }
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
+                        className: "setup-step-desc",
+                        children: "Scan or click to download the Android app to your mobile device."
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "pairing-qr",
+                        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
+                          href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk ",
+                          target: "_blank",
+                          rel: "noreferrer",
+                          title: "Download Transmitter App",
+                          children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
+                            value: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk ",
+                            size: 140,
+                            bgColor: "#ffffff",
+                            fgColor: "#0f172a",
+                            includeMargin: true
+                          }, undefined, false, undefined, this)
+                        }, undefined, false, undefined, this)
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("a", {
+                        className: "pairing-copy",
+                        href: "https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk ",
+                        target: "_blank",
+                        rel: "noreferrer",
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Download, {
+                            size: 14,
+                            strokeWidth: 2.4
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            children: "Download .AAB"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "panel-divider"
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
-                    children: copyLabel
-                  }, undefined, false, undefined, this)
+                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                    className: "setup-step",
+                    children: [
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "setup-step-head",
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                            className: "setup-step-num",
+                            children: "2"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                            className: "setup-step-title",
+                            children: "Connect & Control"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("p", {
+                        className: "setup-step-desc",
+                        children: "Open the app and scan this QR to pair your phone with this room."
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("label", {
+                        className: "pairing-field",
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            className: "panel-label",
+                            children: "WebSocket host"
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("input", {
+                            className: "pairing-input",
+                            type: "text",
+                            value: pairingHost,
+                            onChange: (event) => setPairingHost(event.target.value),
+                            spellCheck: false,
+                            autoCapitalize: "off",
+                            autoCorrect: "off"
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "pairing-room",
+                        children: [
+                          "Room ",
+                          panelState.roomId
+                        ]
+                      }, undefined, true, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "pairing-qr",
+                        children: /* @__PURE__ */ jsx_dev_runtime.jsxDEV(QRCodeSVG, {
+                          value: sensorSocketUrl,
+                          size: 140,
+                          bgColor: "#ffffff",
+                          fgColor: "#0f172a",
+                          includeMargin: true
+                        }, undefined, false, undefined, this)
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("div", {
+                        className: "pairing-url",
+                        children: sensorSocketUrl
+                      }, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime.jsxDEV("button", {
+                        className: "pairing-copy",
+                        type: "button",
+                        onClick: async () => {
+                          await navigator.clipboard.writeText(sensorSocketUrl);
+                          setCopyLabel("Copied");
+                          window.setTimeout(() => setCopyLabel("Copy link"), 1200);
+                        },
+                        children: [
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV(Copy, {
+                            size: 14,
+                            strokeWidth: 2.4
+                          }, undefined, false, undefined, this),
+                          /* @__PURE__ */ jsx_dev_runtime.jsxDEV("span", {
+                            children: copyLabel
+                          }, undefined, false, undefined, this)
+                        ]
+                      }, undefined, true, undefined, this)
+                    ]
+                  }, undefined, true, undefined, this)
                 ]
               }, undefined, true, undefined, this),
               /* @__PURE__ */ jsx_dev_runtime.jsxDEV("ul", {
                 className: "panel-list",
                 children: [
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("li", {
-                    children: "Scan this QR on the sensor device."
+                    children: "The transmitter app uses your phone's tilt sensors."
                   }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsx_dev_runtime.jsxDEV("li", {
-                    children: "The QR opens the exact WebSocket room URL."
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("li", {
-                    children: "If your phone cannot connect, replace localhost with your LAN IP."
-                  }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime.jsxDEV("li", {
-                    children: "Websocket traffic stays in the same room id."
+                    children: "If your phone cannot connect, ensure both are on the same WiFi."
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this)

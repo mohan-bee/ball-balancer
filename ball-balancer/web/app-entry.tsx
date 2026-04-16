@@ -246,13 +246,13 @@ function OverlayApp() {
               <p className="setup-step-desc">Scan or click to download the Android app to your mobile device.</p>
               <div className="pairing-qr">
                 <a
-                  href="https://expo.dev/artifacts/eas/v1ejbdrAfqiYuGMpKZndtF.aab"
+                  href="https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk "
                   target="_blank"
                   rel="noreferrer"
                   title="Download Transmitter App"
                 >
                   <QRCodeSVG
-                    value="https://expo.dev/artifacts/eas/v1ejbdrAfqiYuGMpKZndtF.aab"
+                    value="https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk "
                     size={140}
                     bgColor="#ffffff"
                     fgColor="#0f172a"
@@ -262,7 +262,7 @@ function OverlayApp() {
               </div>
               <a
                 className="pairing-copy"
-                href="https://expo.dev/artifacts/eas/v1ejbdrAfqiYuGMpKZndtF.aab"
+                href="https://expo.dev/artifacts/eas/sf2KVfkt4MLq2tE2H3T5v9.apk "
                 target="_blank"
                 rel="noreferrer"
               >
