@@ -1,27 +1,7 @@
-# Ball Balancer
+This project is a core platform that combines mobile gyroscope input with real-time 3D rendering in the browser to create interactive experiences. It turns a phone into a live controller, capturing tilt (left/right, forward/back) and translating that motion directly into a 3D environment.
 
-Single project deployment containing both the 3D frontend and the WebSocket backend.
+The current demo is a simple example: a 3D ball on a board in the browser. As the user tilts their phone, the ball moves in real time, showing a direct connection between physical motion and on-screen interaction.
 
-## Deployment on Render
+The project includes three prototype versions. V1 introduces a board with a rim that keeps the ball contained. V2 removes the rim, allowing the ball to fall off and respawn. V3 builds on V2 with the same behavior but a different visual style.
 
-1. **Connect Repository**: Create a new "Web Service" on [Render](https://render.com/).
-2. **Environment**: Select **Bun** (or use Docker if preferred, but Bun is faster).
-3. **Build Command**: `bun install && bun run build`
-4. **Start Command**: `bun run start` (runs `server.ts`)
-5. **Port**: Render automatically detects the port (defaults to 3000 if not provided).
-
-## Local Development
-
-```bash
-bun install
-bun run build
-bun dev
-```
-
-Open `http://localhost:3000`.
-
-## How it Works
-
-- The server (`server.ts`) serves the static frontend from the `web/` directory.
-- The same server handles WebSocket connections for real-time sensor data.
-- The pairing logic uses a unique room ID passed via QR code.
+This platform is designed as a foundation for building motion-controlled web applications, interactive games, and immersive 3D experiences.
